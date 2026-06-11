@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import BrandLogo from "@/components/BrandLogo";
+import InstagramIcon from "@/components/InstagramIcon";
 import { ETSY_SHOP_URL, INSTAGRAM_URL } from "@/lib/products";
 
 const links = [
@@ -67,8 +68,9 @@ export default function Navbar() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium text-muted transition hover:text-accent-purple-soft"
+            className="inline-flex items-center gap-2 rounded-full border border-[#fd1d1d]/35 px-3.5 py-2 text-sm font-semibold text-[#ff5f7e] transition hover:border-[#f77737]/60 hover:bg-[#fd1d1d]/10 hover:text-[#f77737]"
           >
+            <InstagramIcon className="h-4 w-4" />
             Instagram
           </a>
           <a
@@ -127,8 +129,9 @@ export default function Navbar() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg px-3 py-3 text-base font-medium text-muted transition hover:bg-surface hover:text-accent-purple-soft"
+              className="inline-flex items-center gap-2 rounded-lg px-3 py-3 text-base font-semibold text-[#ff5f7e] transition hover:bg-[#fd1d1d]/10 hover:text-[#f77737]"
             >
+              <InstagramIcon className="h-5 w-5" />
               Instagram
             </a>
             <a

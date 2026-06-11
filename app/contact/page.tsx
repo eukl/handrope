@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ETSY_SHOP_URL, INSTAGRAM_URL } from "@/lib/products";
+import InstagramIcon from "@/components/InstagramIcon";
 import SectionTitle from "@/components/SectionTitle";
 
 export const metadata: Metadata = {
@@ -35,8 +36,9 @@ export default function ContactPage() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex justify-center rounded-full border border-accent-purple/50 px-7 py-3 text-sm font-semibold text-accent-purple-soft transition hover:bg-accent-purple/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#fd1d1d]/45 px-7 py-3 text-sm font-semibold text-[#ff5f7e] transition hover:border-[#f77737]/70 hover:bg-[#fd1d1d]/10 hover:text-[#f77737]"
             >
+              <InstagramIcon className="h-4 w-4" />
               Instagram
             </a>
           </div>

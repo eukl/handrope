@@ -43,7 +43,7 @@ export default function HomePage() {
               Fait main à Paris. Prêt à partir.
             </p>
             <h1 className="max-w-4xl text-balance font-display text-5xl font-semibold leading-[0.98] text-foreground sm:text-6xl lg:text-7xl">
-              Des bracelets faits pour te suivre, pas pour rester en vitrine.
+              Des bracelets fabriqués pour accompagner les aventures du quotidien, en ville comme au grand air.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
               HandRope fabrique des bracelets simples, solides et réglables,

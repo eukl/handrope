@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
+import InstagramIcon from "@/components/InstagramIcon";
 import { ETSY_SHOP_URL, INSTAGRAM_URL } from "@/lib/products";
 
 const footerLinks = [
@@ -58,8 +59,9 @@ export default function Footer() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="transition hover:text-accent-purple-soft"
+              className="inline-flex items-center gap-2 text-[#ff5f7e] transition hover:text-[#f77737]"
             >
+              <InstagramIcon className="h-4 w-4" />
               Instagram @handrope_craft
             </a>
           </div>
