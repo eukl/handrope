@@ -152,6 +152,26 @@ Chez le registrar du domaine :
 
 Les valeurs exactes doivent être copiées depuis Vercel, car elles peuvent dépendre de la configuration du projet.
 
+### Configuration actuelle handrope.fr
+
+Le domaine `handrope.fr` a été acheté chez Squarespace et le projet est relié à Vercel.
+
+Configuration observée :
+
+```txt
+handrope.fr       Valid Configuration
+www.handrope.fr   Valid Configuration
+```
+
+Les serveurs de noms configurés côté Squarespace sont :
+
+```txt
+ns1.vercel-dns.com
+ns2.vercel-dns.com
+```
+
+Avec cette configuration, Vercel gère les DNS du domaine. Pour toute modification future du domaine, vérifier d’abord dans Vercel, puis ajuster chez Squarespace uniquement si Vercel demande un changement de serveurs de noms ou d’enregistrements DNS.
+
 ## 8. Points à vérifier après déploiement
 
 Vérifier sur l’URL Vercel puis sur `handrope.fr` :
