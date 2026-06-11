@@ -91,7 +91,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 href={product.etsyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-full bg-warm-gradient px-7 py-3 text-sm font-bold text-background shadow-glow transition hover:scale-[1.02]"
+                className="inline-flex items-center justify-center rounded-full bg-warm-gradient px-7 py-3 text-sm font-bold text-[#130f1f] shadow-glow transition hover:scale-[1.02]"
               >
                 Commander sur Etsy
               </a>

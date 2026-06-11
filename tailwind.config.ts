@@ -9,20 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#09080d",
-        surface: "#12101a",
-        "surface-soft": "#1a1724",
-        border: "#2a2435",
-        foreground: "#f5f1ea",
-        muted: "#aaa3b5",
-        "muted-dark": "#746d7e",
-        "accent-purple": "#8b5cf6",
-        "accent-purple-soft": "#a78bfa",
-        "accent-warm": "#f59e0b",
-        "accent-orange": "#f97316",
-        "accent-red": "#ef4444",
-        sand: "#d6b982",
-        rope: "#b5965a"
+        background: "rgb(var(--background) / <alpha-value>)",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        "surface-soft": "rgb(var(--surface-soft) / <alpha-value>)",
+        border: "rgb(var(--border) / <alpha-value>)",
+        foreground: "rgb(var(--foreground) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        "muted-dark": "rgb(var(--muted-dark) / <alpha-value>)",
+        "accent-purple": "rgb(var(--accent-purple) / <alpha-value>)",
+        "accent-purple-soft": "rgb(var(--accent-purple-soft) / <alpha-value>)",
+        "accent-warm": "rgb(var(--accent-warm) / <alpha-value>)",
+        "accent-orange": "rgb(var(--accent-orange) / <alpha-value>)",
+        "accent-red": "rgb(var(--accent-red) / <alpha-value>)",
+        sand: "rgb(var(--sand) / <alpha-value>)",
+        rope: "rgb(var(--rope) / <alpha-value>)"
       },
       fontFamily: {
         sans: [

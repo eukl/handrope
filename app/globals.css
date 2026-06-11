@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --background: #0b0712;
-  --surface: #12101a;
-  --surface-soft: #1a1724;
-  --border: #2a2435;
-  --foreground: #f5f1ea;
-  --muted: #aaa3b5;
-  --muted-dark: #746d7e;
-  --accent-purple: #8b5cf6;
-  --accent-purple-soft: #a78bfa;
-  --accent-warm: #f59e0b;
-  --accent-orange: #f97316;
-  --accent-red: #ef4444;
-  --sand: #d6b982;
-  --rope: #b5965a;
+  --background: 248 246 255;
+  --surface: 255 255 255;
+  --surface-soft: 242 237 255;
+  --border: 224 216 242;
+  --foreground: 27 22 38;
+  --muted: 91 82 111;
+  --muted-dark: 124 112 148;
+  --accent-purple: 124 58 237;
+  --accent-purple-soft: 139 92 246;
+  --accent-warm: 245 158 11;
+  --accent-orange: 249 115 22;
+  --accent-red: 239 68 68;
+  --sand: 151 109 39;
+  --rope: 130 96 42;
 }
 
 * {
@@ -29,13 +29,13 @@ html {
 
 body {
   min-height: 100vh;
-  background: var(--background);
-  color: var(--foreground);
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
 }
 
 body::selection {
-  background: rgba(245, 158, 11, 0.32);
-  color: var(--foreground);
+  background: rgba(124, 58, 237, 0.18);
+  color: rgb(var(--foreground));
 }
 
 a,
@@ -54,7 +54,7 @@ img {
 }
 
 .handrope-logo-neon {
-  color: var(--accent-purple-soft);
+  color: rgb(var(--accent-purple-soft));
   text-shadow:
     0 0 8px rgba(167, 139, 250, 0.72),
     0 0 22px rgba(139, 92, 246, 0.48),
@@ -72,8 +72,8 @@ img {
   inset: 0;
   opacity: 0.16;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    linear-gradient(rgba(124, 58, 237, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.035) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(to bottom, black, transparent 78%);
 }

@@ -27,7 +27,7 @@ export default function ContactPage() {
               href={ETSY_SHOP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex justify-center rounded-full bg-warm-gradient px-7 py-3 text-sm font-bold text-background shadow-glow transition hover:scale-[1.02]"
+              className="inline-flex justify-center rounded-full bg-warm-gradient px-7 py-3 text-sm font-bold text-[#130f1f] shadow-glow transition hover:scale-[1.02]"
             >
               Écrire via Etsy
             </a>

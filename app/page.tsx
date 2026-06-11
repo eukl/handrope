@@ -59,7 +59,7 @@ export default function HomePage() {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/collection"
-                className="inline-flex items-center justify-center rounded-full bg-warm-gradient px-6 py-3 text-sm font-bold text-background shadow-glow transition hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm"
+                className="inline-flex items-center justify-center rounded-full bg-warm-gradient px-6 py-3 text-sm font-bold text-[#130f1f] shadow-glow transition hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-warm"
               >
                 Voir la collection
               </Link>
@@ -200,7 +200,7 @@ export default function HomePage() {
           </h2>
           <Link
             href="/collection"
-            className="mt-8 inline-flex rounded-full bg-warm-gradient px-7 py-3 text-sm font-bold text-background shadow-warm transition hover:scale-[1.02]"
+            className="mt-8 inline-flex rounded-full bg-warm-gradient px-7 py-3 text-sm font-bold text-[#130f1f] shadow-warm transition hover:scale-[1.02]"
           >
             Voir toute la collection
           </Link>
