@@ -11,9 +11,25 @@ export const metadata: Metadata = {
   },
   description:
     "Bracelets artisanaux en paracorde faits main à Paris. Solides, réglables, inspirés par l'outdoor, la route, la mer et le voyage.",
+  manifest: "/site.webmanifest",
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg"
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" }
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/favicon.svg",
+        color: "#b294ff"
+      }
+    ]
   },
   openGraph: {
     title: "HandRope Paris — Bracelets en paracorde faits main",
