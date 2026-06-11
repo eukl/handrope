@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --background: 34 24 18;
-  --surface: 47 34 25;
-  --surface-soft: 63 45 32;
-  --border: 92 67 47;
-  --foreground: 250 244 232;
-  --muted: 214 198 175;
-  --muted-dark: 171 146 116;
+  --background: 13 13 13;
+  --surface: 21 19 27;
+  --surface-soft: 31 28 39;
+  --border: 49 44 61;
+  --foreground: 246 243 238;
+  --muted: 185 176 199;
+  --muted-dark: 128 118 145;
   --accent-purple: 150 105 255;
   --accent-purple-soft: 178 148 255;
   --accent-warm: 235 158 61;
   --accent-orange: 220 100 49;
   --accent-red: 191 75 63;
   --sand: 222 184 112;
-  --rope: 181 140 72;
+  --rope: 150 105 255;
 }
 
 * {
@@ -29,7 +29,11 @@ html {
 
 body {
   min-height: 100vh;
-  background: rgb(var(--background));
+  background:
+    radial-gradient(circle at 18% 12%, rgba(150, 105, 255, 0.13), transparent 32rem),
+    radial-gradient(circle at 86% 20%, rgba(220, 100, 49, 0.055), transparent 26rem),
+    radial-gradient(circle at 50% 100%, rgba(150, 105, 255, 0.07), transparent 34rem),
+    rgb(var(--background));
   color: rgb(var(--foreground));
 }
 
@@ -72,8 +76,8 @@ img {
   inset: 0;
   opacity: 0.16;
   background-image:
-    linear-gradient(rgba(222, 184, 112, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(220, 100, 49, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(150, 105, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(150, 105, 255, 0.035) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(to bottom, black, transparent 78%);
 }
