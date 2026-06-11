@@ -9,15 +9,15 @@ import { reviews } from "@/lib/reviews";
 const promises = [
   {
     title: "Fait main à Paris",
-    text: "Chaque bracelet est préparé à l’atelier, avec une attention simple portée au tressage, aux finitions et au confort."
+    text: "Petites séries, tressage propre, finitions vérifiées à la main. Rien d'industriel, rien de compliqué."
   },
   {
-    title: "Pensé pour durer",
-    text: "Paracorde résistante, nœuds coulissants, port quotidien. Pas fragile. Pas précieux. Juste fiable."
+    title: "De la corde, simplement",
+    text: "De la paracorde résistante, des noeuds coulissants, un port facile au quotidien. Le bracelet doit tenir, c'est tout."
   },
   {
-    title: "Achat sécurisé via Etsy",
-    text: "Pas de panier caché ni de paiement bricolé ici. La commande et le paiement se font directement sur Etsy."
+    title: "Commande via Etsy",
+    text: "Les achats passent par Etsy pour garder un paiement clair, sécurisé, et un suivi simple de la commande."
   }
 ];
 
@@ -40,15 +40,16 @@ export default function HomePage() {
         <div className="relative mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 pb-16 lg:grid-cols-[minmax(0,0.95fr)_minmax(25rem,0.85fr)] lg:gap-16">
           <MotionWrapper className="relative z-10 min-w-0">
             <p className="mb-5 inline-flex rounded-full border border-accent-warm/30 bg-accent-warm/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-sand">
-              Porté au poignet. Prêt pour l’aventure.
+              Fait main à Paris. Prêt à partir.
             </p>
             <h1 className="max-w-4xl text-balance font-display text-5xl font-semibold leading-[0.98] text-foreground sm:text-6xl lg:text-7xl">
-              Des bracelets faits pour suivre, pas pour rester en vitrine.
+              Bracelets en paracorde pour la route, la mer et les jours dehors.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-              HandRope Paris fabrique des bracelets en paracorde faits main,
-              solides, réglables et prêts à accompagner le quotidien comme les
-              aventures.
+              HandRope fabrique des bracelets simples, solides et réglables,
+              inspirés par le voyage, les cordages, le sable et les objets
+              qu&apos;on
+              garde longtemps.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -100,9 +101,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <SectionTitle
-              eyebrow="Modèles"
-              title="Les bracelets qui ouvrent la marche."
-              description="Dune, Sea Shanty et Vespa posent l’univers HandRope : solide, culturel, portable, sans mise en scène inutile."
+              eyebrow="Collection"
+              title="Cinq modèles, chacun avec son terrain."
+              description="Désert, mer, route, Italie, clin d'oeil français. Les noms ne sont pas là pour décorer : ils donnent le ton du bracelet."
             />
             <Link
               href="/collection"
@@ -119,8 +120,8 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <SectionTitle
             eyebrow="Terrain"
-            title="Un morceau de corde, un objet quotidien, un compagnon d’aventure."
-            description="Le bracelet ne décide pas de l’aventure à ta place. Il tient au poignet pendant que tu vis le reste."
+            title="Fait pour bouger, pas pour être fragile."
+            description="Un bracelet réglable, résistant à l'eau, pensé pour rester au poignet pendant les journées normales comme les départs improvisés."
           />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {usages.map((usage) => (
@@ -152,10 +153,10 @@ export default function HomePage() {
       <section className="px-4 pb-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl overflow-hidden rounded-lg border border-border bg-surface-grain p-8 text-center shadow-glow sm:p-12">
           <p className="text-sm font-semibold uppercase tracking-[0.26em] text-accent-warm">
-            Fait main à Paris. Pensé pour durer.
+            Fait main à Paris. Sans surproduction.
           </p>
           <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
-            Choisis ton bracelet. Il fera le reste.
+            Choisis le modèle qui te parle.
           </h2>
           <Link
             href="/collection"

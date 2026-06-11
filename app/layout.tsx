@@ -10,11 +10,15 @@ export const metadata: Metadata = {
     template: "%s — HandRope Paris"
   },
   description:
-    "Bracelets artisanaux en paracorde faits main à Paris. Solides, réglables, pensés pour le quotidien, le voyage et l’aventure.",
+    "Bracelets artisanaux en paracorde faits main à Paris. Solides, réglables, inspirés par l'outdoor, la route, la mer et le voyage.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg"
+  },
   openGraph: {
     title: "HandRope Paris — Bracelets en paracorde faits main",
     description:
-      "Bracelets artisanaux en paracorde faits main à Paris. Solides, réglables, pensés pour le quotidien, le voyage et l’aventure.",
+      "Bracelets artisanaux en paracorde faits main à Paris. Solides, réglables, inspirés par l'outdoor, la route, la mer et le voyage.",
     siteName: "HandRope Paris",
     locale: "fr_FR",
     type: "website"

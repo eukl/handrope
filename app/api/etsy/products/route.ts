@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import fallbackProducts from "@/data/products-fallback.json";
 import type { EtsyProduct } from "@/lib/etsy-products";
+import { getProductCopyForListing } from "@/lib/product-copy";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const ETSY_API_BASE = "https://openapi.etsy.com/v3/application";
 const CACHE_TTL_MS = 15 * 60 * 1000;
+const ETSY_REQUEST_TIMEOUT_MS = 7000;
 
 type CachedProducts = {
   data: EtsyProduct[];
@@ -142,12 +144,16 @@ function imageUrlFrom(images: EtsyImage[]) {
 }
 
 async function fetchEtsyJson<T>(path: string, apiKey: string) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ETSY_REQUEST_TIMEOUT_MS);
+
   const response = await fetch(`${ETSY_API_BASE}${path}`, {
     headers: {
       "x-api-key": apiKey
     },
-    cache: "no-store"
-  });
+    cache: "no-store",
+    signal: controller.signal
+  }).finally(() => clearTimeout(timeout));
 
   if (!response.ok) {
     throw new Error(`Etsy API ${response.status} on ${path}`);
@@ -189,6 +195,7 @@ async function fetchEtsyProducts() {
     listings.map(async (listing) => {
       const id = String(listing.listing_id ?? "");
       const title = listing.title?.trim() || `Listing ${id}`;
+      const productCopy = getProductCopyForListing({ id, title });
       const { price, currency } = normalizePrice(
         listing.price,
         listing.currency_code
@@ -202,7 +209,9 @@ async function fetchEtsyProducts() {
         title,
         price,
         currency,
-        shortDescription: truncateDescription(listing.description, title),
+        shortDescription:
+          productCopy?.shortDescription ??
+          truncateDescription(listing.description, title),
         image: imageUrlFrom(images),
         etsyUrl: listing.url ?? `https://www.etsy.com/fr/listing/${id}`
       };

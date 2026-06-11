@@ -16,7 +16,7 @@ export default function Footer() {
           <BrandLogo showParis className="text-[2.35rem] leading-none sm:text-[2.7rem]" />
           <p className="mt-3 max-w-md text-sm leading-6 text-muted">
             Bracelets en paracorde faits main à Paris. Simples, solides,
-            réglables, prêts à suivre le quotidien comme les aventures.
+            réglables, inspirés par la route, la mer et les jours dehors.
           </p>
           <p className="mt-4 text-sm font-medium text-sand">
             Achat sécurisé via Etsy

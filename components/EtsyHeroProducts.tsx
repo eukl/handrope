@@ -2,12 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import ProductImage from "@/components/ProductImage";
+import fallbackProducts from "@/data/products-fallback.json";
 import {
   etsyProductTitle,
   type EtsyProduct
 } from "@/lib/etsy-products";
 
 const preferredHeroProducts = ["Dune", "Sea Shanty", "Vespa"];
+const fallback = fallbackProducts as EtsyProduct[];
 
 function heroProductsFrom(products: EtsyProduct[]) {
   const preferred = preferredHeroProducts
@@ -22,7 +24,7 @@ function heroProductsFrom(products: EtsyProduct[]) {
 }
 
 export default function EtsyHeroProducts() {
-  const [products, setProducts] = useState<EtsyProduct[]>([]);
+  const [products, setProducts] = useState<EtsyProduct[]>(fallback);
 
   useEffect(() => {
     let isMounted = true;
@@ -42,6 +44,10 @@ export default function EtsyHeroProducts() {
         }
       } catch (error) {
         console.error("[etsy-hero-products] Unable to load products", error);
+
+        if (isMounted) {
+          setProducts(fallback);
+        }
       }
     }
 

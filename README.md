@@ -197,7 +197,7 @@ data/products-fallback.json
 Le lien general de la boutique Etsy est defini dans :
 
 ```ts
-export const ETSY_SHOP_URL = "https://www.etsy.com/fr/shop/HandRopeParis";
+export const ETSY_SHOP_URL = "https://www.etsy.com/shop/HandRope";
 ```
 
 Le lien Instagram est defini dans :

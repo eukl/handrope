@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import EtsyProductCard from "@/components/EtsyProductCard";
+import fallbackProducts from "@/data/products-fallback.json";
 import type { EtsyProduct } from "@/lib/etsy-products";
 
 type EtsyProductsGridProps = {
@@ -9,6 +10,7 @@ type EtsyProductsGridProps = {
 };
 
 const featuredTitles = ["Dune", "Sea Shanty", "Vespa"];
+const fallback = fallbackProducts as EtsyProduct[];
 
 function sortFeaturedProducts(products: EtsyProduct[]) {
   return [...products].sort((a, b) => {
@@ -26,8 +28,8 @@ function sortFeaturedProducts(products: EtsyProduct[]) {
 export default function EtsyProductsGrid({
   featuredOnly = false
 }: EtsyProductsGridProps) {
-  const [products, setProducts] = useState<EtsyProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState<EtsyProduct[]>(fallback);
+  const [isLoading, setIsLoading] = useState(fallback.length === 0);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
@@ -50,7 +52,8 @@ export default function EtsyProductsGrid({
         console.error("[etsy-products-grid] Unable to load products", error);
 
         if (isMounted) {
-          setHasError(true);
+          setProducts(fallback);
+          setHasError(fallback.length === 0);
         }
       } finally {
         if (isMounted) {

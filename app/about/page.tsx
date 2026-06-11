@@ -4,21 +4,21 @@ import SectionTitle from "@/components/SectionTitle";
 export const metadata: Metadata = {
   title: "À propos",
   description:
-    "Découvrez HandRope Paris, une marque française de bracelets en paracorde faits main à Paris, solides, sobres et pensés pour le quotidien."
+    "HandRope Paris fabrique des bracelets en paracorde faits main, simples, solides et inspirés par l'outdoor."
 };
 
 const sections = [
   {
     title: "HandRope Paris",
-    text: "HandRope est né d’un goût simple pour les objets utiles, solides, bien faits. Un bracelet n’a pas besoin d’en faire des tonnes. Il doit tenir, se porter facilement, et accompagner ce qu’on vit."
+    text: "HandRope part d'une idée simple : fabriquer des bracelets solides, propres, faciles à porter. Pas une marque de mode, plutôt un petit atelier pour des objets qu'on garde au poignet."
   },
   {
     title: "Pourquoi la paracorde",
-    text: "La paracorde a ce mélange rare : légère, résistante, souple, agréable à porter. Elle vient d’un univers fonctionnel, mais elle peut devenir un objet personnel quand elle est bien choisie et bien travaillée."
+    text: "La paracorde vient d'un univers utile : léger, solide, souple. Bien choisie et bien tressée, elle devient un bracelet simple, confortable, prêt à suivre."
   },
   {
     title: "Fait main, sans surproduction",
-    text: "Les bracelets sont fabriqués à Paris, en petites quantités. L'idée n'est pas de remplir des étagères, mais de proposer des pièces propres, cohérentes, prêtes à partir."
+    text: "Les bracelets sont fabriqués à Paris, en petites quantités. L'idée n'est pas de remplir des étagères, mais de sortir des pièces propres, cohérentes et prêtes à partir."
   },
   {
     title: "Pensé pour le quotidien",
@@ -26,7 +26,7 @@ const sections = [
   },
   {
     title: "Pas de promesse absurde",
-    text: "HandRope ne vend pas un superpouvoir. Juste un bracelet solide, simple, réglable, fait avec soin. Pas fragile. Pas précieux. Juste fiable."
+    text: "HandRope ne vend pas un superpouvoir. Juste un bracelet solide, simple, réglable, fait avec soin. Il doit tenir sa place, pas raconter n'importe quoi."
   }
 ];
 
@@ -36,8 +36,8 @@ export default function AboutPage() {
       <div className="mx-auto max-w-6xl">
         <SectionTitle
           eyebrow="Atelier"
-          title="Fait main à Paris. Pensé pour durer."
-          description="Une approche directe, artisanale et honnête du bracelet en paracorde."
+          title="Un petit atelier, de la corde, des bracelets faits pour suivre."
+          description="HandRope mélange paracorde, couleurs de voyage et fabrication simple. Rien de surjoué, juste des bracelets qu'on a envie d'emmener."
         />
 
         <div className="mt-12 grid gap-5">
