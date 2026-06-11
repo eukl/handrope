@@ -114,11 +114,13 @@ La reponse renvoyee au frontend contient uniquement :
 ```ts
 {
   id: string;
+  slug: string;
   title: string;
   price: number;
   currency: string;
   shortDescription: string;
   image: string;
+  images: string[];
   etsyUrl: string;
 }
 ```
@@ -153,11 +155,17 @@ Chaque entree doit respecter ce format :
 ```json
 {
   "id": "4517031306",
+  "slug": "dune",
   "title": "Dune",
   "price": 24.9,
   "currency": "EUR",
   "shortDescription": "Bracelet en paracorde fait main.",
   "image": "/products/dune/dune-1.jpg",
+  "images": [
+    "/products/dune/dune-1.jpg",
+    "/products/dune/dune-2.jpg",
+    "/products/dune/dune-3.jpg"
+  ],
   "etsyUrl": "https://www.etsy.com/fr/listing/..."
 }
 ```

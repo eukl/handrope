@@ -1,3 +1,4 @@
+import Link from "next/link";
 import MotionWrapper from "@/components/MotionWrapper";
 import ProductImage from "@/components/ProductImage";
 import {
@@ -15,10 +16,8 @@ export default function EtsyProductCard({ product }: EtsyProductCardProps) {
 
   return (
     <MotionWrapper className="h-full">
-      <a
-        href={product.etsyUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+      <Link
+        href={`/collection/${product.slug}`}
         className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface/82 shadow-warm transition duration-300 hover:-translate-y-1 hover:border-accent-purple/60 hover:bg-surface-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-purple"
       >
         <ProductImage
@@ -42,13 +41,13 @@ export default function EtsyProductCard({ product }: EtsyProductCardProps) {
             {product.shortDescription}
           </p>
           <span className="mt-6 inline-flex items-center text-sm font-semibold text-accent-purple-soft transition group-hover:text-accent-warm">
-            Commander sur Etsy
+            Voir le modèle
             <span className="ml-2" aria-hidden="true">
               →
             </span>
           </span>
         </div>
-      </a>
+      </Link>
     </MotionWrapper>
   );
 }

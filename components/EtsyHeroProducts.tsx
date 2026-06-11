@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import ProductImage from "@/components/ProductImage";
 import fallbackProducts from "@/data/products-fallback.json";
 import {
   etsyProductTitle,
+  slugifyEtsyTitle,
   type EtsyProduct
 } from "@/lib/etsy-products";
 
@@ -62,13 +64,15 @@ export default function EtsyHeroProducts() {
   const displayProducts =
     heroProducts.length > 0
       ? heroProducts
-      : preferredHeroProducts.map((title, index) => ({
+      : preferredHeroProducts.map((title) => ({
           id: title,
+          slug: slugifyEtsyTitle(title),
           title,
           price: 0,
           currency: "EUR",
           shortDescription: "",
           image: "",
+          images: [],
           etsyUrl: "#"
         }));
 
@@ -78,11 +82,9 @@ export default function EtsyHeroProducts() {
         const title = etsyProductTitle(product.title);
 
         return (
-          <a
+          <Link
             key={product.id}
-            href={product.etsyUrl}
-            target={product.etsyUrl === "#" ? undefined : "_blank"}
-            rel={product.etsyUrl === "#" ? undefined : "noopener noreferrer"}
+            href={`/collection/${product.slug}`}
             className={[
               "absolute rounded-lg border border-border bg-surface/82 p-3 shadow-warm backdrop-blur transition hover:-translate-y-1 hover:border-accent-purple/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-purple",
               index === 0
@@ -108,7 +110,7 @@ export default function EtsyHeroProducts() {
                 {title}
               </span>
             </div>
-          </a>
+          </Link>
         );
       })}
     </div>

@@ -5,6 +5,15 @@ export type ProductCopy = {
   story: string;
 };
 
+export const productDetails = [
+  "Bracelet fait main à Paris",
+  "Paracorde résistante",
+  "Réglable grâce aux noeuds coulissants",
+  "Pensé pour être porté tous les jours",
+  "Résiste à l'eau",
+  "Commande et paiement via Etsy"
+];
+
 export const productCopyBySlug = {
   dune: {
     name: "Dune",
@@ -79,4 +88,8 @@ export function getProductCopyForListing({
   return Object.values(productCopyBySlug).find((copy) =>
     normalizedTitle.includes(copy.name.toLowerCase())
   );
+}
+
+export function getProductCopyForSlug(slug: string) {
+  return productCopyBySlug[slug as keyof typeof productCopyBySlug];
 }

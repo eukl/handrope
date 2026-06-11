@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import fallbackProducts from "@/data/products-fallback.json";
-import type { EtsyProduct } from "@/lib/etsy-products";
+import { slugifyEtsyTitle, type EtsyProduct } from "@/lib/etsy-products";
 import { getProductCopyForListing } from "@/lib/product-copy";
 
 export const runtime = "nodejs";
@@ -141,15 +141,20 @@ function normalizePrice(price: EtsyMoney | undefined, currencyCode?: string) {
 }
 
 function imageUrlFrom(images: EtsyImage[]) {
-  const firstImage = images[0];
+  return imageUrlsFrom(images)[0] ?? "";
+}
 
-  return (
-    firstImage?.url_fullxfull ??
-    firstImage?.url_570xN ??
-    firstImage?.url_300x300 ??
-    firstImage?.url_170x135 ??
-    ""
-  );
+function imageUrlsFrom(images: EtsyImage[]) {
+  return images
+    .map(
+      (image) =>
+        image.url_fullxfull ??
+        image.url_570xN ??
+        image.url_300x300 ??
+        image.url_170x135 ??
+        ""
+    )
+    .filter(Boolean);
 }
 
 async function fetchEtsyJson<T>(path: string, apiKey: string) {
@@ -217,6 +222,7 @@ async function fetchEtsyProducts() {
       const id = String(listing.listing_id ?? "");
       const title = listing.title?.trim() || `Listing ${id}`;
       const productCopy = getProductCopyForListing({ id, title });
+      const slug = slugifyEtsyTitle(productCopy?.name ?? title) || id;
       const { price, currency } = normalizePrice(
         listing.price,
         listing.currency_code
@@ -224,16 +230,19 @@ async function fetchEtsyProducts() {
       const images = listing.images?.length
         ? listing.images
         : await fetchListingImages(id, apiKey);
+      const imageUrls = imageUrlsFrom(images);
 
       return {
         id,
+        slug,
         title,
         price,
         currency,
         shortDescription:
           productCopy?.shortDescription ??
           truncateDescription(listing.description, title),
-        image: imageUrlFrom(images),
+        image: imageUrls[0] ?? imageUrlFrom(images),
+        images: imageUrls,
         etsyUrl: listing.url ?? `https://www.etsy.com/fr/listing/${id}`
       };
     })

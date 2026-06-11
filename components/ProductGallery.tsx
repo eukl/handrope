@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductImage from "@/components/ProductImage";
 
 type ProductGalleryProps = {
@@ -10,6 +10,10 @@ type ProductGalleryProps = {
 
 export default function ProductGallery({ images, name }: ProductGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(images[0] ?? "");
+
+  useEffect(() => {
+    setSelectedImage(images[0] ?? "");
+  }, [images]);
 
   return (
     <div className="space-y-4">
