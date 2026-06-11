@@ -35,9 +35,16 @@ Creer un fichier `.env.local` a la racine du projet :
 ```bash
 ETSY_API_KEY="..."
 ETSY_SHOP_ID="..."
+CONTACT_TO_EMAIL="adresse_email_destinataire"
+CONTACT_FROM_EMAIL="contact@handrope.fr"
+RESEND_API_KEY="cle_api_resend"
 ```
 
 Ces variables restent cote serveur. Ne pas les prefixer avec `NEXT_PUBLIC_`.
+Ne jamais commiter `.env.local`.
+
+Si les variables Resend manquent, le site continue de builder et le formulaire
+affiche un message indiquant que le contact est temporairement indisponible.
 
 Lancer le serveur de developpement :
 
@@ -74,12 +81,14 @@ npm run start
 ```txt
 app/
   api/etsy/products/route.ts   API serveur de synchronisation Etsy
+  api/contact/route.ts         API serveur du formulaire de contact
   page.tsx                     Homepage
   collection/page.tsx          Page collection
   products/[slug]/page.tsx     Fiches produits statiques historiques
   about/page.tsx               Page a propos
   contact/page.tsx             Page contact
 components/
+  ContactForm.tsx              Formulaire de contact client
   EtsyHeroProducts.tsx         Produits Etsy affiches dans le hero
   EtsyProductCard.tsx          Carte produit Etsy
   EtsyProductsGrid.tsx         Grille collection Etsy
@@ -126,6 +135,37 @@ La reponse renvoyee au frontend contient uniquement :
 ```
 
 Les cles Etsy ne sont jamais envoyees au navigateur. Le cache serveur dure 15 minutes.
+
+## Formulaire de contact
+
+La page `/contact` envoie les messages via l'API serveur :
+
+```txt
+/api/contact
+```
+
+L'envoi d'email passe par Resend et utilise uniquement des variables
+d'environnement serveur :
+
+```txt
+CONTACT_TO_EMAIL
+CONTACT_FROM_EMAIL
+RESEND_API_KEY
+```
+
+`CONTACT_TO_EMAIL` est l'adresse qui recoit les messages. Elle ne doit jamais
+apparaitre dans le code GitHub. `CONTACT_FROM_EMAIL` doit correspondre a une
+adresse autorisee cote Resend, par exemple `contact@handrope.fr`.
+
+En local, ajouter ces variables dans `.env.local`. Sur Vercel, les ajouter dans
+`Settings` -> `Environment Variables`, au minimum pour `Production`.
+
+Si `RESEND_API_KEY` ou `CONTACT_TO_EMAIL` manque, l'API renvoie une erreur
+controlee et l'utilisateur voit :
+
+```txt
+Le formulaire est temporairement indisponible. Vous pouvez nous contacter via Etsy ou Instagram.
+```
 
 ## Ajouter ou modifier un produit
 
@@ -229,7 +269,7 @@ Resume rapide :
 1. Pousser le projet sur GitHub.
 2. Importer le repository dans Vercel.
 3. Laisser Vercel detecter Next.js.
-4. Ajouter les variables d'environnement Etsy dans Vercel.
+4. Ajouter les variables d'environnement Etsy et Resend dans Vercel.
 5. Verifier que la commande de build est `npm run build`.
 6. Deployer.
 7. Ajouter le domaine `handrope.fr` dans Vercel.

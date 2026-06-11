@@ -23,11 +23,15 @@ Node.js 20.19 ou plus recent
 npm 10 ou plus recent
 ```
 
-Creer un fichier `.env.local` pour tester la synchronisation Etsy en local :
+Creer un fichier `.env.local` pour tester la synchronisation Etsy et le
+formulaire de contact en local :
 
 ```bash
 ETSY_API_KEY="..."
 ETSY_SHOP_ID="..."
+CONTACT_TO_EMAIL="adresse_email_destinataire"
+CONTACT_FROM_EMAIL="contact@handrope.fr"
+RESEND_API_KEY="cle_api_resend"
 ```
 
 Important :
@@ -35,6 +39,8 @@ Important :
 - Ne jamais prefixer ces variables avec `NEXT_PUBLIC_`.
 - Ne jamais commiter `.env.local`.
 - Si les variables manquent, `/api/etsy/products` utilise `data/products-fallback.json`.
+- Si les variables Resend manquent, `/api/contact` renvoie une erreur controlee
+  et le site continue de fonctionner.
 
 Lancer le site en developpement :
 
@@ -116,7 +122,7 @@ Output Directory: laisser vide / defaut Next.js
 Install Command: npm install
 ```
 
-## 5. Ajouter les variables d'environnement Etsy dans Vercel
+## 5. Ajouter les variables d'environnement dans Vercel
 
 Dans le projet Vercel :
 
@@ -127,9 +133,13 @@ Dans le projet Vercel :
 ```txt
 ETSY_API_KEY
 ETSY_SHOP_ID
+CONTACT_TO_EMAIL
+CONTACT_FROM_EMAIL
+RESEND_API_KEY
 ```
 
-Ne pas creer de variables `NEXT_PUBLIC_ETSY_*`. Les cles doivent rester serveur uniquement.
+Ne pas creer de variables `NEXT_PUBLIC_ETSY_*` ou `NEXT_PUBLIC_RESEND_*`. Les
+cles et adresses privees doivent rester serveur uniquement.
 
 Apres modification des variables d'environnement, redeployer le projet pour que Vercel les prenne en compte.
 
@@ -205,7 +215,8 @@ Verifier sur l'URL Vercel puis sur `handrope.fr` :
 - Le fallback reste propre si Etsy est indisponible.
 - Les boutons `Commander sur Etsy` ouvrent les bonnes fiches Etsy.
 - Les liens Instagram ouvrent `https://www.instagram.com/handrope_craft/`.
-- La page contact reste claire.
+- La page contact envoie bien un message si les variables Resend sont configurees.
+- La page contact affiche un message indisponible propre si Resend n'est pas configure.
 - Le site est lisible sur mobile.
 - Aucun panier, paiement, Stripe ou base de donnees n'a ete ajoute.
 

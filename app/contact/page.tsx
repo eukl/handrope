@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { ETSY_SHOP_URL, INSTAGRAM_URL } from "@/lib/products";
+import ContactForm from "@/components/ContactForm";
 import InstagramIcon from "@/components/InstagramIcon";
 import SectionTitle from "@/components/SectionTitle";
+import { ETSY_SHOP_URL, INSTAGRAM_URL } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -17,11 +18,12 @@ export default function ContactPage() {
           <SectionTitle
             eyebrow="Contact"
             title="Une taille spéciale, une couleur précise, un cadeau ?"
-            description="Pour une taille spéciale, une couleur précise ou une commande cadeau, envoie-moi un message."
+            description="Pour une taille spéciale, une couleur précise ou une commande cadeau, envoie-nous un message."
           />
           <p className="mt-8 max-w-xl leading-7 text-muted">
-            Le site ne gère pas de backend ni de paiement. Les commandes et les
-            échanges liés à l’achat passent directement par Etsy.
+            Les commandes et les paiements passent toujours par Etsy. Pour une
+            question de taille, de couleur ou de cadeau, tu peux écrire ici ou
+            passer directement par Etsy.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
@@ -44,51 +46,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <form className="rounded-lg border border-border bg-surface/82 p-6 sm:p-8">
-          <p className="mb-6 text-sm leading-6 text-muted">
-            Formulaire statique pour l’instant : aucun message n’est envoyé
-            depuis ce site. Utilise Etsy pour une réponse directe.
-          </p>
-          <div className="grid gap-5">
-            <label className="grid gap-2 text-sm font-semibold text-foreground">
-              Nom
-              <input
-                type="text"
-                name="name"
-                disabled
-                placeholder="Ton nom"
-                className="rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-dark disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </label>
-            <label className="grid gap-2 text-sm font-semibold text-foreground">
-              Email
-              <input
-                type="email"
-                name="email"
-                disabled
-                placeholder="ton@email.fr"
-                className="rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-dark disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </label>
-            <label className="grid gap-2 text-sm font-semibold text-foreground">
-              Message
-              <textarea
-                name="message"
-                disabled
-                rows={6}
-                placeholder="Taille, couleur, idée cadeau..."
-                className="resize-none rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-dark disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </label>
-            <button
-              type="button"
-              disabled
-              className="rounded-full border border-border px-6 py-3 text-sm font-semibold text-muted-dark disabled:cursor-not-allowed"
-            >
-              Envoyer
-            </button>
-          </div>
-        </form>
+        <ContactForm />
       </div>
     </section>
   );
