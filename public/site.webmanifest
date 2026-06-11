@@ -1,0 +1,20 @@
+{
+  "name": "HandRope Paris",
+  "short_name": "HandRope",
+  "description": "Bracelets en paracorde faits main à Paris.",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#221812",
+  "background_color": "#221812",
+  "display": "standalone"
+}

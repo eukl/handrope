@@ -1,0 +1,47 @@
+[
+  {
+    "id": "4517031306",
+    "title": "Dune",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Sable, beige et terracotta. Un bracelet discret, solide, qui passe aussi bien avec un tee-shirt blanc qu'une veste noire.",
+    "image": "/products/dune/dune-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517031306/dune-bracelet-paracorde-beige-homme"
+  },
+  {
+    "id": "4517041881",
+    "title": "Sea Shanty",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Bleu marine, blanc cassé, rouge. Un clin d'oeil aux cordages et à l'air salé, sans tomber dans le déguisement marin.",
+    "image": "/products/sea-shanty/sea-shanty-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517041881/sea-shanty-bracelet-paracorde-bleu"
+  },
+  {
+    "id": "4478833346",
+    "title": "Mona Lisa",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Bleu, blanc, rouge, mais moderne. Un clin d'oeil français assumé, simple à porter.",
+    "image": "/products/mona-lisa/mona-lisa-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4478833346/mona-lisa-bracelet-paracorde-homme-femme"
+  },
+  {
+    "id": "4517044363",
+    "title": "Vespa",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Vert, crème et noir. Un bracelet léger, solaire, avec ce petit côté Italie, terrasse et virée en scooter.",
+    "image": "/products/vespa/vespa-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517044363/vespa-bracelet-paracorde-vert-blanc"
+  },
+  {
+    "id": "4517047079",
+    "title": "Paint It Black",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Noir et rouge, direct. Un bracelet qui sent la route, l'asphalte et les départs sans trop réfléchir.",
+    "image": "/products/paint-it-black/paint-it-black-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517047079/paint-it-black-bracelet-paracorde-noir"
+  }
+]
