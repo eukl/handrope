@@ -1,10 +1,9 @@
 import Link from "next/link";
+import EtsyHeroProducts from "@/components/EtsyHeroProducts";
+import EtsyProductsGrid from "@/components/EtsyProductsGrid";
 import MotionWrapper from "@/components/MotionWrapper";
-import ProductCard from "@/components/ProductCard";
-import ProductImage from "@/components/ProductImage";
 import ReviewCard from "@/components/ReviewCard";
 import SectionTitle from "@/components/SectionTitle";
-import { featuredProducts, products } from "@/lib/products";
 import { reviews } from "@/lib/reviews";
 
 const promises = [
@@ -33,11 +32,6 @@ const usages = [
 ];
 
 export default function HomePage() {
-  const heroProducts = featuredProducts.slice(0, 3);
-  const highlightedProducts = products.filter((product) =>
-    ["dune", "sea-shanty", "vespa"].includes(product.slug)
-  );
-
   return (
     <>
       <section className="noise-layer relative overflow-hidden px-4 pt-28 sm:px-6 lg:px-8">
@@ -78,38 +72,7 @@ export default function HomePage() {
           >
             <div className="absolute -left-4 top-10 h-48 w-48 rounded-full bg-accent-purple/20 blur-3xl" />
             <div className="absolute -right-8 bottom-16 h-48 w-48 rounded-full bg-accent-warm/16 blur-3xl" />
-            <div className="relative mx-auto h-[53rem] w-full max-w-[42rem] sm:h-[43rem] lg:h-[37rem]">
-              {heroProducts.map((product, index) => (
-                <div
-                  key={product.slug}
-                  className={[
-                    "absolute rounded-lg border border-border bg-surface/82 p-3 shadow-warm backdrop-blur",
-                    index === 0
-                      ? "left-0 top-0 w-[82%] sm:w-[47%] lg:w-[48%]"
-                      : "",
-                    index === 1
-                      ? "right-0 top-[18rem] w-[82%] sm:top-10 sm:w-[47%] lg:top-12 lg:w-[48%]"
-                      : "",
-                    index === 2
-                      ? "bottom-0 left-1/2 w-[82%] -translate-x-1/2 sm:w-[58%] lg:w-[60%]"
-                      : ""
-                  ].join(" ")}
-                >
-                  <ProductImage
-                    src={product.images[0]}
-                    alt={`Bracelet ${product.name}`}
-                    name={product.name}
-                    sizes="(min-width: 1024px) 28vw, 33vw"
-                    className="aspect-[4/3]"
-                  />
-                  <div className="mt-3">
-                    <span className="font-display text-xl font-semibold">
-                      {product.name}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <EtsyHeroProducts />
           </MotionWrapper>
         </div>
       </section>
@@ -148,11 +111,7 @@ export default function HomePage() {
               Toute la collection
             </Link>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {highlightedProducts.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
+          <EtsyProductsGrid featuredOnly />
         </div>
       </section>
 

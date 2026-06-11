@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import ProductCard from "@/components/ProductCard";
+import EtsyProductsGrid from "@/components/EtsyProductsGrid";
 import SectionTitle from "@/components/SectionTitle";
-import { products } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "La collection",
@@ -19,11 +18,7 @@ export default function CollectionPage() {
           description="Des modèles en paracorde faits main à Paris, inspirés par le voyage, la musique, le cinéma et les objets qui tiennent vraiment."
         />
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
-        </div>
+        <EtsyProductsGrid />
       </div>
     </section>
   );

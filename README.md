@@ -1,34 +1,46 @@
 # HandRope Paris
 
-Site vitrine Next.js pour HandRope Paris, marque de bracelets artisanaux en paracorde faits main à Paris.
+Site vitrine Next.js pour HandRope Paris, marque de bracelets artisanaux en paracorde faits main a Paris.
 
-Le site présente la marque, la collection, les fiches produits, les avis clients Etsy et redirige les achats vers Etsy. Il ne contient pas de panier, pas de paiement, pas de backend et pas de base de données.
+Le site presente la marque, la collection, les fiches produits historiques, les avis clients Etsy et redirige les achats vers Etsy. Il ne contient pas de panier, pas de paiement, pas de Stripe et pas de base de donnees.
+
+Les produits affiches sur la homepage et la page collection sont synchronises depuis Etsy via `/api/etsy/products`. Si l'API Etsy est indisponible ou si les variables d'environnement manquent en local, le site utilise le fallback `data/products-fallback.json`.
 
 ## Stack
 
 - Next.js 14 avec App Router
-- TypeScript
+- TypeScript strict
 - Tailwind CSS v3
 - Framer Motion
-- Données produits et avis en dur
-- Déploiement prévu sur Vercel
+- Route API serveur pour lire Etsy Open API v3
+- Deploiement sur Vercel
 
 ## Lancer le projet en local
 
-Version recommandée :
+Version recommandee :
 
 ```txt
-Node.js 20.19 ou plus récent
-npm 10 ou plus récent
+Node.js 20.19 ou plus recent
+npm 10 ou plus recent
 ```
 
-Installer les dépendances :
+Installer les dependances :
 
 ```bash
 npm install
 ```
 
-Lancer le serveur de développement :
+Creer un fichier `.env.local` a la racine du projet :
+
+```bash
+ETSY_KEYSTRING="..."
+ETSY_SHARED_SECRET="..."
+ETSY_SHOP_ID="..."
+```
+
+Ces variables restent cote serveur. Ne pas les prefixer avec `NEXT_PUBLIC_`.
+
+Lancer le serveur de developpement :
 
 ```bash
 npm run dev
@@ -40,19 +52,19 @@ Ouvrir ensuite :
 http://localhost:3000
 ```
 
-Vérifier le build production :
+Verifier le build production :
 
 ```bash
 npm run build
 ```
 
-Vérifier ESLint :
+Verifier ESLint :
 
 ```bash
 npm run lint
 ```
 
-Lancer la version production après build :
+Lancer la version production apres build :
 
 ```bash
 npm run start
@@ -62,66 +74,107 @@ npm run start
 
 ```txt
 app/
-  page.tsx                 Homepage
-  collection/page.tsx      Page collection
-  products/[slug]/page.tsx Fiches produits statiques
-  about/page.tsx           Page à propos
-  contact/page.tsx         Page contact
+  api/etsy/products/route.ts   API serveur de synchronisation Etsy
+  page.tsx                     Homepage
+  collection/page.tsx          Page collection
+  products/[slug]/page.tsx     Fiches produits statiques historiques
+  about/page.tsx               Page a propos
+  contact/page.tsx             Page contact
 components/
-  BrandLogo.tsx            Logo texte HandRope
-  ProductCard.tsx          Carte produit
-  ProductGallery.tsx       Galerie fiche produit
-  ProductImage.tsx         Image produit avec fallback
-  ReviewCard.tsx           Carte avis client
+  EtsyHeroProducts.tsx         Produits Etsy affiches dans le hero
+  EtsyProductCard.tsx          Carte produit Etsy
+  EtsyProductsGrid.tsx         Grille collection Etsy
+  ProductImage.tsx             Image produit avec fallback
+  ReviewCard.tsx               Carte avis client
+data/
+  products-fallback.json       Fallback local si Etsy est indisponible
 lib/
-  products.ts              Données produits
-  reviews.ts               Avis clients Etsy
-public/products/           Images produits
+  etsy-products.ts             Types et helpers des produits Etsy
+  products.ts                  Donnees locales des fiches historiques et liens globaux
+  reviews.ts                   Avis clients Etsy
+public/products/               Images produits fallback/locales
 ```
 
-## Ajouter un produit
+## Synchronisation Etsy
 
-Les produits sont déclarés dans :
+La route suivante expose les produits normalises au frontend :
 
 ```txt
-lib/products.ts
+/api/etsy/products
 ```
 
-Ajouter un objet dans le tableau `products` avec cette structure :
+Elle lit les listings actifs de la boutique Etsy avec les variables serveur :
+
+```txt
+ETSY_KEYSTRING
+ETSY_SHARED_SECRET
+ETSY_SHOP_ID
+```
+
+La reponse renvoyee au frontend contient uniquement :
 
 ```ts
 {
-  slug: "nom-du-produit",
-  name: "Nom du produit",
-  price: 24.9,
-  etsyUrl: "https://www.etsy.com/fr/listing/...",
-  shortDescription: "Description courte.",
-  description: "Description affichée sur la fiche produit.",
-  story: "Inspiration du modèle.",
-  specs: commonSpecs,
-  images: productImages("nom-du-produit"),
-  colors: ["Couleur 1", "Couleur 2"],
-  inStock: true
+  id: string;
+  title: string;
+  price: number;
+  currency: string;
+  shortDescription: string;
+  image: string;
+  etsyUrl: string;
 }
 ```
 
-Pour afficher ce produit dans le hero de la homepage, ajouter :
+Les cles Etsy ne sont jamais envoyees au navigateur. Le cache serveur dure 15 minutes.
 
-```ts
-featured: true
+## Ajouter ou modifier un produit
+
+Etsy est la source de verite pour la homepage et la collection.
+
+Pour ajouter un produit :
+
+1. Creer ou activer le listing dans Etsy.
+2. Ajouter une image principale au listing Etsy.
+3. Verifier que le listing est actif.
+4. Attendre jusqu'a 15 minutes ou redeployer/redemarrer le serveur local pour vider le cache.
+
+Pour modifier un titre, un prix, une image ou une URL d'achat, faire la modification dans Etsy.
+
+## Mettre a jour le fallback local
+
+Le fallback est utilise si Etsy ne repond pas, si les variables manquent ou pendant certains tests locaux.
+
+Modifier :
+
+```txt
+data/products-fallback.json
 ```
 
-Le site génère automatiquement les pages produits avec `generateStaticParams()`.
+Chaque entree doit respecter ce format :
 
-## Ajouter les images produits
+```json
+{
+  "id": "4517031306",
+  "title": "Dune",
+  "price": 24.9,
+  "currency": "EUR",
+  "shortDescription": "Bracelet en paracorde fait main.",
+  "image": "/products/dune/dune-1.jpg",
+  "etsyUrl": "https://www.etsy.com/fr/listing/..."
+}
+```
 
-Les images doivent être placées dans :
+## Images produits
+
+En production, les images principales viennent d'Etsy.
+
+Les images locales restent utiles pour le fallback et les fiches statiques historiques :
 
 ```txt
 public/products/[slug]/
 ```
 
-Exemple pour un produit `dune` :
+Exemple :
 
 ```txt
 public/products/dune/dune-1.jpg
@@ -129,27 +182,25 @@ public/products/dune/dune-2.jpg
 public/products/dune/dune-3.jpg
 ```
 
-Les chemins sont générés depuis `productImages(slug)` dans `lib/products.ts`.
+Si une image manque, `ProductImage` affiche un placeholder propre au lieu de casser l'interface.
 
-Si une image manque, le composant `ProductImage` affiche un placeholder propre au lieu de casser l’interface.
+## Remplacer les liens Etsy
 
-## Remplacer un lien Etsy
+Pour les produits synchronises, remplacer le lien dans Etsy directement.
 
-Dans `lib/products.ts`, modifier la propriété `etsyUrl` du produit concerné :
+Pour le fallback local, modifier `etsyUrl` dans :
 
-```ts
-etsyUrl: "https://www.etsy.com/fr/listing/..."
+```txt
+data/products-fallback.json
 ```
 
-Le bouton `Commander sur Etsy` utilisera automatiquement ce lien.
-
-Le lien général de la boutique Etsy est défini ici :
+Le lien general de la boutique Etsy est defini dans :
 
 ```ts
 export const ETSY_SHOP_URL = "https://www.etsy.com/fr/shop/HandRopeParis";
 ```
 
-Le lien Instagram est défini ici :
+Le lien Instagram est defini dans :
 
 ```ts
 export const INSTAGRAM_URL = "https://www.instagram.com/handrope_craft/";
@@ -157,25 +208,25 @@ export const INSTAGRAM_URL = "https://www.instagram.com/handrope_craft/";
 
 ## Avis clients
 
-Les avis affichés sur la homepage sont dans :
+Les avis affiches sur la homepage sont dans :
 
 ```txt
 lib/reviews.ts
 ```
 
-Garder uniquement des avis réels ou explicitement assumés comme exemples.
+Garder uniquement des avis reels ou explicitement assumes comme exemples.
 
-## Déployer sur Vercel
+## Deployer sur Vercel
 
-Résumé rapide :
+Resume rapide :
 
-1. Créer un repository GitHub.
-2. Pousser le projet sur GitHub.
-3. Importer le repository dans Vercel.
-4. Laisser Vercel détecter Next.js.
-5. Vérifier que la commande de build est `npm run build`.
-6. Déployer.
+1. Pousser le projet sur GitHub.
+2. Importer le repository dans Vercel.
+3. Laisser Vercel detecter Next.js.
+4. Ajouter les variables d'environnement Etsy dans Vercel.
+5. Verifier que la commande de build est `npm run build`.
+6. Deployer.
 7. Ajouter le domaine `handrope.fr` dans Vercel.
 8. Configurer les DNS chez le registrar selon les instructions Vercel.
 
-Le workflow détaillé est documenté dans `DEPLOYMENT.md`.
+Le workflow detaille est documente dans `DEPLOYMENT.md`.

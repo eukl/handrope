@@ -1,8 +1,8 @@
-# Déploiement HandRope Paris
+# Deploiement HandRope Paris
 
-Ce document décrit le workflow de mise en ligne propre du site HandRope Paris via GitHub et Vercel.
+Ce document decrit le workflow de mise en ligne du site HandRope Paris via GitHub et Vercel.
 
-## 1. Vérifier le projet en local
+## 1. Verifier le projet en local
 
 Depuis le dossier du projet :
 
@@ -10,20 +10,34 @@ Depuis le dossier du projet :
 cd "C:\Users\louis\Documents\Site HandRope 2\handrope"
 ```
 
-Installer les dépendances :
+Installer les dependances :
 
 ```bash
 npm install
 ```
 
-Version recommandée :
+Version recommandee :
 
 ```txt
-Node.js 20.19 ou plus récent
-npm 10 ou plus récent
+Node.js 20.19 ou plus recent
+npm 10 ou plus recent
 ```
 
-Lancer le site en développement :
+Creer un fichier `.env.local` pour tester la synchronisation Etsy en local :
+
+```bash
+ETSY_KEYSTRING="..."
+ETSY_SHARED_SECRET="..."
+ETSY_SHOP_ID="..."
+```
+
+Important :
+
+- Ne jamais prefixer ces variables avec `NEXT_PUBLIC_`.
+- Ne jamais commiter `.env.local`.
+- Si les variables manquent, `/api/etsy/products` utilise `data/products-fallback.json`.
+
+Lancer le site en developpement :
 
 ```bash
 npm run dev
@@ -35,13 +49,19 @@ Ouvrir :
 http://localhost:3000
 ```
 
-Vérifier le build production :
+Tester l'API produits :
+
+```txt
+http://localhost:3000/api/etsy/products
+```
+
+Verifier le build production :
 
 ```bash
 npm run build
 ```
 
-Vérifier ESLint :
+Verifier ESLint :
 
 ```bash
 npm run lint
@@ -49,14 +69,14 @@ npm run lint
 
 Le build doit passer sans erreur TypeScript, Next.js, ESLint ou Tailwind.
 
-## 2. Créer un repository GitHub
+## 2. Creer un repository GitHub
 
 Sur GitHub :
 
-1. Créer un nouveau repository.
+1. Creer un nouveau repository.
 2. Choisir un nom, par exemple `handrope`.
-3. Ne pas initialiser avec README si le fichier existe déjà localement.
-4. Copier l’URL du repository GitHub.
+3. Ne pas initialiser avec README si le fichier existe deja localement.
+4. Copier l'URL du repository GitHub.
 
 ## 3. Pousser le projet sur GitHub
 
@@ -71,7 +91,7 @@ git remote add origin <URL_DU_REPO_GITHUB>
 git push -u origin main
 ```
 
-Remplacer `<URL_DU_REPO_GITHUB>` par l’URL réelle du repository GitHub.
+Remplacer `<URL_DU_REPO_GITHUB>` par l'URL reelle du repository GitHub.
 
 Exemple :
 
@@ -79,37 +99,53 @@ Exemple :
 git remote add origin https://github.com/TON-COMPTE/handrope.git
 ```
 
-## 4. Connecter GitHub à Vercel
+## 4. Connecter GitHub a Vercel
 
 Dans Vercel :
 
 1. Cliquer sur `Add New...`.
 2. Choisir `Project`.
 3. Importer le repository GitHub du site HandRope.
-4. Laisser Vercel détecter automatiquement Next.js.
+4. Laisser Vercel detecter automatiquement Next.js.
 
-Vérifier les paramètres :
+Verifier les parametres :
 
 ```txt
 Framework Preset: Next.js
 Build Command: npm run build
-Output Directory: laisser vide / défaut Next.js
+Output Directory: laisser vide / defaut Next.js
 Install Command: npm install
 ```
 
-Ne pas ajouter de backend, de panier, de Stripe ou de base de données.
+## 5. Ajouter les variables d'environnement Etsy dans Vercel
 
-## 5. Déployer
+Dans le projet Vercel :
+
+1. Aller dans `Settings`.
+2. Ouvrir `Environment Variables`.
+3. Ajouter ces variables pour `Production`, et aussi `Preview` si besoin :
+
+```txt
+ETSY_KEYSTRING
+ETSY_SHARED_SECRET
+ETSY_SHOP_ID
+```
+
+Ne pas creer de variables `NEXT_PUBLIC_ETSY_*`. Les cles doivent rester serveur uniquement.
+
+Apres modification des variables d'environnement, redeployer le projet pour que Vercel les prenne en compte.
+
+## 6. Deployer
 
 Cliquer sur `Deploy`.
 
 Vercel va :
 
-1. Installer les dépendances avec `npm install`.
+1. Installer les dependances avec `npm install`.
 2. Lancer `npm run build`.
 3. Publier le site.
 
-Si le build échoue, lire les logs Vercel, corriger localement, relancer :
+Si le build echoue, lire les logs Vercel, corriger localement, relancer :
 
 ```bash
 npm run build
@@ -118,11 +154,13 @@ git commit -m "Fix production build"
 git push
 ```
 
-Vercel redéploiera automatiquement après le `git push`.
+Vercel redeploiera automatiquement apres le `git push`.
 
-## 6. Ajouter le domaine handrope.fr
+## 7. Ajouter le domaine handrope.fr
 
-Après le premier déploiement :
+Le domaine est deja relie a Vercel dans la configuration actuelle.
+
+Pour verifier ou refaire la configuration :
 
 1. Ouvrir le projet dans Vercel.
 2. Aller dans `Settings`.
@@ -133,62 +171,47 @@ Après le premier déploiement :
 handrope.fr
 ```
 
-5. Ajouter aussi si souhaité :
+5. Ajouter aussi :
 
 ```txt
 www.handrope.fr
 ```
 
-## 7. Configurer les DNS
+## 8. Configurer les DNS
 
-Vercel affichera les enregistrements DNS à configurer chez le registrar.
-
-Chez le registrar du domaine :
-
-1. Ouvrir la gestion DNS de `handrope.fr`.
-2. Ajouter ou modifier les entrées demandées par Vercel.
-3. Attendre la propagation DNS.
-4. Revenir dans Vercel et vérifier que le domaine est validé.
-
-Les valeurs exactes doivent être copiées depuis Vercel, car elles peuvent dépendre de la configuration du projet.
-
-### Configuration actuelle handrope.fr
-
-Le domaine `handrope.fr` a été acheté chez Squarespace et le projet est relié à Vercel.
-
-Configuration observée :
+Configuration observee :
 
 ```txt
 handrope.fr       Valid Configuration
 www.handrope.fr   Valid Configuration
 ```
 
-Les serveurs de noms configurés côté Squarespace sont :
+Le domaine `handrope.fr` a ete achete chez Squarespace et les serveurs de noms configures cote Squarespace sont :
 
 ```txt
 ns1.vercel-dns.com
 ns2.vercel-dns.com
 ```
 
-Avec cette configuration, Vercel gère les DNS du domaine. Pour toute modification future du domaine, vérifier d’abord dans Vercel, puis ajuster chez Squarespace uniquement si Vercel demande un changement de serveurs de noms ou d’enregistrements DNS.
+Avec cette configuration, Vercel gere les DNS du domaine. Pour une modification future, verifier d'abord dans Vercel, puis ajuster chez Squarespace uniquement si Vercel demande un changement.
 
-## 8. Points à vérifier après déploiement
+## 9. Points a verifier apres deploiement
 
-Vérifier sur l’URL Vercel puis sur `handrope.fr` :
+Verifier sur l'URL Vercel puis sur `handrope.fr` :
 
-- La homepage s’affiche correctement.
-- Le logo HandRope est lisible.
-- Les images produits chargent bien.
-- Les placeholders restent propres si une image manque.
-- La page collection affiche les 5 produits.
-- Chaque fiche produit fonctionne.
+- La homepage s'affiche correctement.
+- Le fond, le logo et les couleurs sont conformes.
+- La page collection affiche les listings actifs Etsy.
+- `/api/etsy/products` renvoie un tableau JSON sans aucune cle Etsy.
+- Les images produits Etsy chargent bien.
+- Le fallback reste propre si Etsy est indisponible.
 - Les boutons `Commander sur Etsy` ouvrent les bonnes fiches Etsy.
 - Les liens Instagram ouvrent `https://www.instagram.com/handrope_craft/`.
-- La page contact indique clairement que les messages passent par Etsy ou Instagram.
+- La page contact reste claire.
 - Le site est lisible sur mobile.
-- Aucun panier, paiement, Stripe, backend ou base de données n’a été ajouté.
+- Aucun panier, paiement, Stripe ou base de donnees n'a ete ajoute.
 
-## 9. Mises à jour futures
+## 10. Mises a jour futures
 
 Pour modifier le site :
 
@@ -199,4 +222,4 @@ git commit -m "Update HandRope website"
 git push
 ```
 
-Vercel redéploiera automatiquement après chaque push sur `main`.
+Vercel redeploiera automatiquement apres chaque push sur `main`.

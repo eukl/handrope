@@ -1,0 +1,47 @@
+[
+  {
+    "id": "4517031306",
+    "title": "Dune",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Tons désertiques, esprit sci-fi, prêt pour les longues traversées.",
+    "image": "/products/dune/dune-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517031306/dune-bracelet-paracorde-beige-homme"
+  },
+  {
+    "id": "4517041881",
+    "title": "Sea Shanty",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Un bracelet marin, solide et simple, pensé pour les embruns.",
+    "image": "/products/sea-shanty/sea-shanty-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517041881/sea-shanty-bracelet-paracorde-bleu"
+  },
+  {
+    "id": "4478833346",
+    "title": "Mona Lisa",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Une référence française, discrète et graphique.",
+    "image": "/products/mona-lisa/mona-lisa-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4478833346/mona-lisa-bracelet-paracorde-homme-femme"
+  },
+  {
+    "id": "4517044363",
+    "title": "Vespa",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Esprit italien, balade urbaine, liberté en deux roues.",
+    "image": "/products/vespa/vespa-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517044363/vespa-bracelet-paracorde-vert-blanc"
+  },
+  {
+    "id": "4517047079",
+    "title": "Paint It Black",
+    "price": 24.9,
+    "currency": "EUR",
+    "shortDescription": "Noir, rouge, efficace. Un classique rock au poignet.",
+    "image": "/products/paint-it-black/paint-it-black-1.jpg",
+    "etsyUrl": "https://www.etsy.com/fr/listing/4517047079/paint-it-black-bracelet-paracorde-noir"
+  }
+]
