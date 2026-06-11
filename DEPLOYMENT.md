@@ -26,8 +26,7 @@ npm 10 ou plus recent
 Creer un fichier `.env.local` pour tester la synchronisation Etsy en local :
 
 ```bash
-ETSY_KEYSTRING="..."
-ETSY_SHARED_SECRET="..."
+ETSY_API_KEY="..."
 ETSY_SHOP_ID="..."
 ```
 
@@ -126,8 +125,7 @@ Dans le projet Vercel :
 3. Ajouter ces variables pour `Production`, et aussi `Preview` si besoin :
 
 ```txt
-ETSY_KEYSTRING
-ETSY_SHARED_SECRET
+ETSY_API_KEY
 ETSY_SHOP_ID
 ```
 

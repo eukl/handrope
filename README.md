@@ -33,8 +33,7 @@ npm install
 Creer un fichier `.env.local` a la racine du projet :
 
 ```bash
-ETSY_KEYSTRING="..."
-ETSY_SHARED_SECRET="..."
+ETSY_API_KEY="..."
 ETSY_SHOP_ID="..."
 ```
 
@@ -106,8 +105,7 @@ La route suivante expose les produits normalises au frontend :
 Elle lit les listings actifs de la boutique Etsy avec les variables serveur :
 
 ```txt
-ETSY_KEYSTRING
-ETSY_SHARED_SECRET
+ETSY_API_KEY
 ETSY_SHOP_ID
 ```
 

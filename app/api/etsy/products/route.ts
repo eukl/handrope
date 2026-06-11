@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 const ETSY_API_BASE = "https://openapi.etsy.com/v3/application";
 const CACHE_TTL_MS = 15 * 60 * 1000;
-const ETSY_REQUEST_TIMEOUT_MS = 7000;
+const ETSY_REQUEST_TIMEOUT_MS = 3000;
 
 type CachedProducts = {
   data: EtsyProduct[];
@@ -51,6 +51,10 @@ let productsCache: CachedProducts | null = null;
 
 const fallback = fallbackProducts as EtsyProduct[];
 
+function logEtsyInfo(message: string) {
+  console.info(`[etsy-products] ${message}`);
+}
+
 function logEtsyError(message: string, error?: unknown) {
   if (error instanceof Error) {
     console.error(`[etsy-products] ${message}: ${error.message}`);
@@ -63,6 +67,11 @@ function logEtsyError(message: string, error?: unknown) {
   }
 
   console.error(`[etsy-products] ${message}`);
+}
+
+function getFallbackProducts(reason: string) {
+  logEtsyInfo(`${reason}. Using data/products-fallback.json.`);
+  return fallback;
 }
 
 function jsonResponse(data: EtsyProduct[], source: "etsy" | "fallback") {
@@ -145,21 +154,33 @@ function imageUrlFrom(images: EtsyImage[]) {
 
 async function fetchEtsyJson<T>(path: string, apiKey: string) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), ETSY_REQUEST_TIMEOUT_MS);
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, ETSY_REQUEST_TIMEOUT_MS);
 
-  const response = await fetch(`${ETSY_API_BASE}${path}`, {
-    headers: {
-      "x-api-key": apiKey
-    },
-    cache: "no-store",
-    signal: controller.signal
-  }).finally(() => clearTimeout(timeout));
+  try {
+    const response = await fetch(`${ETSY_API_BASE}${path}`, {
+      headers: {
+        "x-api-key": apiKey
+      },
+      cache: "no-store",
+      signal: controller.signal
+    });
 
-  if (!response.ok) {
-    throw new Error(`Etsy API ${response.status} on ${path}`);
+    if (!response.ok) {
+      throw new Error(`Etsy API ${response.status} on ${path}`);
+    }
+
+    return (await response.json()) as T;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error(`Etsy API timeout after 3000ms on ${path}`);
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return (await response.json()) as T;
 }
 
 async function fetchListingImages(listingId: string, apiKey: string) {
@@ -172,18 +193,18 @@ async function fetchListingImages(listingId: string, apiKey: string) {
 }
 
 async function fetchEtsyProducts() {
-  const missingVariables = [
-    "ETSY_KEYSTRING",
-    "ETSY_SHARED_SECRET",
-    "ETSY_SHOP_ID"
-  ].filter((key) => !process.env[key]);
-
-  if (missingVariables.length > 0) {
-    throw new Error(`Missing server env vars: ${missingVariables.join(", ")}`);
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    return getFallbackProducts("Next production build detected");
   }
 
-  const apiKey = `${process.env.ETSY_KEYSTRING}:${process.env.ETSY_SHARED_SECRET}`;
+  const apiKey = process.env.ETSY_API_KEY;
   const shopId = process.env.ETSY_SHOP_ID;
+
+  if (!apiKey || !shopId) {
+    return getFallbackProducts(
+      "Missing ETSY_API_KEY or ETSY_SHOP_ID server env vars"
+    );
+  }
 
   const listingsResponse = await fetchEtsyJson<EtsyListResponse<EtsyListing>>(
     `/shops/${shopId}/listings/active?limit=100`,
@@ -218,7 +239,15 @@ async function fetchEtsyProducts() {
     })
   );
 
-  return normalizedProducts.filter((product) => product.id && product.etsyUrl);
+  const products = normalizedProducts.filter(
+    (product) => product.id && product.etsyUrl
+  );
+
+  if (products.length === 0) {
+    return getFallbackProducts("Etsy returned no usable active listings");
+  }
+
+  return products;
 }
 
 export async function GET() {
@@ -230,12 +259,13 @@ export async function GET() {
 
   try {
     const etsyProducts = await fetchEtsyProducts();
-    setCachedProducts(etsyProducts, "etsy");
+    const source = etsyProducts === fallback ? "fallback" : "etsy";
+    setCachedProducts(etsyProducts, source);
 
-    return jsonResponse(etsyProducts, "etsy");
+    return jsonResponse(etsyProducts, source);
   } catch (error) {
     logEtsyError(
-      "Unable to fetch active Etsy listings. Using data/products-fallback.json",
+      "Unable to fetch active Etsy listings within the safe timeout. Using data/products-fallback.json",
       error
     );
     setCachedProducts(fallback, "fallback");
