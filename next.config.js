@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
-const hasEtsyApi = Boolean(process.env.ETSY_API_KEY && process.env.ETSY_SHOP_ID);
+const hasEtsyApi = Boolean(
+  process.env.ETSY_KEYSTRING && process.env.ETSY_SHOP_ID
+);
 const startupLogKey = "__handropeStartupLogPrinted";
 const isDevServer = process.argv.includes("dev");
 

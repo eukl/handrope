@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fallbackProducts from "@/data/products-fallback.json";
 import { slugifyEtsyTitle, type EtsyProduct } from "@/lib/etsy-products";
 import { getProductCopyForListing } from "@/lib/product-copy";
+import { getEtsyEnv } from "@/lib/server/env";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -202,18 +203,19 @@ async function fetchEtsyProducts() {
     return getFallbackProducts("Next production build detected");
   }
 
-  const apiKey = process.env.ETSY_API_KEY;
-  const shopId = process.env.ETSY_SHOP_ID;
+  const etsyEnv = getEtsyEnv();
 
-  if (!apiKey || !shopId) {
+  if (!etsyEnv.ok) {
     return getFallbackProducts(
-      "Missing ETSY_API_KEY or ETSY_SHOP_ID server env vars"
+      `Missing ${etsyEnv.missing.join(", ")} server env vars`
     );
   }
 
+  const { keystring, shopId } = etsyEnv.value;
+
   const listingsResponse = await fetchEtsyJson<EtsyListResponse<EtsyListing>>(
     `/shops/${shopId}/listings/active?limit=100`,
-    apiKey
+    keystring
   );
   const listings = extractResults(listingsResponse);
 
@@ -229,7 +231,7 @@ async function fetchEtsyProducts() {
       );
       const images = listing.images?.length
         ? listing.images
-        : await fetchListingImages(id, apiKey);
+        : await fetchListingImages(id, keystring);
       const imageUrls = imageUrlsFrom(images);
 
       return {

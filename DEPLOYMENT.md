@@ -27,7 +27,7 @@ Creer un fichier `.env.local` pour tester la synchronisation Etsy et le
 formulaire de contact en local :
 
 ```bash
-ETSY_API_KEY="..."
+ETSY_KEYSTRING="..."
 ETSY_SHOP_ID="..."
 CONTACT_TO_EMAIL="adresse_email_destinataire"
 CONTACT_FROM_EMAIL="contact@handrope.fr"
@@ -38,7 +38,8 @@ Important :
 
 - Ne jamais prefixer ces variables avec `NEXT_PUBLIC_`.
 - Ne jamais commiter `.env.local`.
-- Si les variables manquent, `/api/etsy/products` utilise `data/products-fallback.json`.
+- `ETSY_SHARED_SECRET` n'est pas utilise pour le moment.
+- Si les variables Etsy manquent, `/api/etsy/products` utilise `data/products-fallback.json`.
 - Si les variables Resend manquent, `/api/contact` renvoie une erreur controlee
   et le site continue de fonctionner.
 
@@ -131,7 +132,7 @@ Dans le projet Vercel :
 3. Ajouter ces variables pour `Production`, et aussi `Preview` si besoin :
 
 ```txt
-ETSY_API_KEY
+ETSY_KEYSTRING
 ETSY_SHOP_ID
 CONTACT_TO_EMAIL
 CONTACT_FROM_EMAIL

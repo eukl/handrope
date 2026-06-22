@@ -1,17 +1,26 @@
 import { NextResponse } from "next/server";
+import { getContactEnv } from "@/lib/server/env";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const RESEND_EMAILS_ENDPOINT = "https://api.resend.com/emails";
 const RESEND_TIMEOUT_MS = 10000;
+const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
+const MAX_NAME_LENGTH = 120;
+const MAX_EMAIL_LENGTH = 180;
+const MAX_MESSAGE_LENGTH = 3000;
 const unavailableMessage =
   "Le formulaire est temporairement indisponible. Vous pouvez nous contacter via Etsy ou Instagram.";
+const blockedMessage =
+  "Le message n'a pas pu être envoyé pour le moment. Réessaie dans quelques minutes.";
 
 type ContactPayload = {
   name?: unknown;
   email?: unknown;
   message?: unknown;
+  company?: unknown;
 };
 
 type ContactFormData = {
@@ -19,6 +28,13 @@ type ContactFormData = {
   email: string;
   message: string;
 };
+
+type RateLimitEntry = {
+  count: number;
+  resetAt: number;
+};
+
+const rateLimitStore = new Map<string, RateLimitEntry>();
 
 function jsonError(message: string, status: number) {
   return NextResponse.json({ ok: false, message }, { status });
@@ -30,6 +46,33 @@ function sanitize(value: string) {
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function getClientKey(request: Request) {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  const realIp = request.headers.get("x-real-ip");
+  return forwardedFor?.split(",")[0]?.trim() || realIp?.trim() || "local";
+}
+
+function isRateLimited(clientKey: string) {
+  const now = Date.now();
+  const currentEntry = rateLimitStore.get(clientKey);
+
+  if (!currentEntry || currentEntry.resetAt <= now) {
+    rateLimitStore.set(clientKey, {
+      count: 1,
+      resetAt: now + CONTACT_RATE_LIMIT_WINDOW_MS
+    });
+    return false;
+  }
+
+  if (currentEntry.count >= CONTACT_RATE_LIMIT_MAX_REQUESTS) {
+    return true;
+  }
+
+  currentEntry.count += 1;
+  rateLimitStore.set(clientKey, currentEntry);
+  return false;
 }
 
 function toContactPayload(payload: unknown): ContactPayload {
@@ -46,6 +89,12 @@ function validatePayload(payload: ContactPayload): ContactFormData | string {
     typeof payload.email === "string" ? sanitize(payload.email).toLowerCase() : "";
   const message =
     typeof payload.message === "string" ? payload.message.trim() : "";
+  const company =
+    typeof payload.company === "string" ? payload.company.trim() : "";
+
+  if (company) {
+    return "CONTACT_FORM_SPAM";
+  }
 
   if (!name) {
     return "Le nom est requis.";
@@ -53,6 +102,14 @@ function validatePayload(payload: ContactPayload): ContactFormData | string {
 
   if (!email) {
     return "L'email est requis.";
+  }
+
+  if (name.length > MAX_NAME_LENGTH) {
+    return "Le nom est trop long.";
+  }
+
+  if (email.length > MAX_EMAIL_LENGTH) {
+    return "L'email est trop long.";
   }
 
   if (!isValidEmail(email)) {
@@ -63,10 +120,14 @@ function validatePayload(payload: ContactPayload): ContactFormData | string {
     return "Le message est requis.";
   }
 
+  if (message.length > MAX_MESSAGE_LENGTH) {
+    return "Le message est trop long.";
+  }
+
   return {
-    name: name.slice(0, 120),
-    email: email.slice(0, 180),
-    message: message.slice(0, 3000)
+    name,
+    email,
+    message
   };
 }
 
@@ -108,22 +169,16 @@ ${message}`;
 }
 
 async function sendContactEmail(data: ContactFormData) {
-  const resendApiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.CONTACT_TO_EMAIL;
-  const fromEmail = process.env.CONTACT_FROM_EMAIL;
+  const contactEnv = getContactEnv();
 
-  if (!resendApiKey || !toEmail || !fromEmail) {
-    const missingVariables = [
-      !resendApiKey ? "RESEND_API_KEY" : null,
-      !toEmail ? "CONTACT_TO_EMAIL" : null,
-      !fromEmail ? "CONTACT_FROM_EMAIL" : null
-    ].filter(Boolean);
-
+  if (!contactEnv.ok) {
     console.error(
-      `[contact] Missing server env vars: ${missingVariables.join(", ")}`
+      `[contact] Missing server env vars: ${contactEnv.missing.join(", ")}`
     );
     throw new Error("CONTACT_FORM_UNAVAILABLE");
   }
+
+  const { resendApiKey, toEmail, fromEmail } = contactEnv.value;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), RESEND_TIMEOUT_MS);
@@ -147,8 +202,7 @@ async function sendContactEmail(data: ContactFormData) {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`[contact] Resend error ${response.status}: ${errorText}`);
+      console.error(`[contact] Resend error ${response.status}.`);
       throw new Error("RESEND_SEND_FAILED");
     }
   } catch (error) {
@@ -164,6 +218,11 @@ async function sendContactEmail(data: ContactFormData) {
 
 export async function POST(request: Request) {
   try {
+    if (isRateLimited(getClientKey(request))) {
+      console.warn("[contact] Rate limit exceeded.");
+      return jsonError(blockedMessage, 429);
+    }
+
     let payload: unknown;
 
     try {
@@ -173,6 +232,11 @@ export async function POST(request: Request) {
     }
 
     const validated = validatePayload(toContactPayload(payload));
+
+    if (validated === "CONTACT_FORM_SPAM") {
+      console.warn("[contact] Honeypot triggered.");
+      return jsonError(blockedMessage, 400);
+    }
 
     if (typeof validated === "string") {
       return jsonError(validated, 400);

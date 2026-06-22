@@ -65,6 +65,8 @@ export default function ContactForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const company = String(formData.get("company") ?? "");
 
     const validationError = validateForm();
 
@@ -86,7 +88,8 @@ export default function ContactForm() {
         body: JSON.stringify({
           name: form.name.trim(),
           email: form.email.trim(),
-          message: form.message.trim()
+          message: form.message.trim(),
+          company
         })
       });
 
@@ -118,6 +121,15 @@ export default function ContactForm() {
       </p>
 
       <div className="grid gap-5">
+        <input
+          type="text"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="hidden"
+        />
+
         <label className="grid gap-2 text-sm font-semibold text-foreground">
           Nom
           <input
@@ -127,6 +139,7 @@ export default function ContactForm() {
             onChange={(event) => updateField("name", event.target.value)}
             disabled={isSending}
             autoComplete="name"
+            maxLength={120}
             placeholder="Ton nom"
             className="rounded-lg border border-border bg-background px-4 py-3 text-foreground outline-none transition placeholder:text-muted-dark focus:border-accent-purple/70 focus:ring-2 focus:ring-accent-purple/20 disabled:cursor-not-allowed disabled:opacity-60"
           />
@@ -141,6 +154,7 @@ export default function ContactForm() {
             onChange={(event) => updateField("email", event.target.value)}
             disabled={isSending}
             autoComplete="email"
+            maxLength={180}
             placeholder="ton@email.fr"
             className="rounded-lg border border-border bg-background px-4 py-3 text-foreground outline-none transition placeholder:text-muted-dark focus:border-accent-purple/70 focus:ring-2 focus:ring-accent-purple/20 disabled:cursor-not-allowed disabled:opacity-60"
           />
@@ -154,6 +168,7 @@ export default function ContactForm() {
             onChange={(event) => updateField("message", event.target.value)}
             disabled={isSending}
             rows={6}
+            maxLength={3000}
             placeholder="Taille, couleur, idée cadeau..."
             className="resize-none rounded-lg border border-border bg-background px-4 py-3 text-foreground outline-none transition placeholder:text-muted-dark focus:border-accent-purple/70 focus:ring-2 focus:ring-accent-purple/20 disabled:cursor-not-allowed disabled:opacity-60"
           />

@@ -1,4 +1,5 @@
 import { productCopyBySlug } from "@/lib/product-copy";
+export { ETSY_SHOP_URL, INSTAGRAM_URL } from "@/lib/site-config";
 
 export type Product = {
   slug: string;
@@ -14,9 +15,6 @@ export type Product = {
   inStock: boolean;
   featured?: boolean;
 };
-
-export const ETSY_SHOP_URL = "https://www.etsy.com/shop/HandRope";
-export const INSTAGRAM_URL = "https://www.instagram.com/handrope_craft/";
 
 const commonSpecs = [
   "Bracelet fait main à Paris",

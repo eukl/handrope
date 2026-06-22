@@ -33,7 +33,7 @@ npm install
 Creer un fichier `.env.local` a la racine du projet :
 
 ```bash
-ETSY_API_KEY="..."
+ETSY_KEYSTRING="..."
 ETSY_SHOP_ID="..."
 CONTACT_TO_EMAIL="adresse_email_destinataire"
 CONTACT_FROM_EMAIL="contact@handrope.fr"
@@ -114,7 +114,7 @@ La route suivante expose les produits normalises au frontend :
 Elle lit les listings actifs de la boutique Etsy avec les variables serveur :
 
 ```txt
-ETSY_API_KEY
+ETSY_KEYSTRING
 ETSY_SHOP_ID
 ```
 
@@ -134,7 +134,8 @@ La reponse renvoyee au frontend contient uniquement :
 }
 ```
 
-Les cles Etsy ne sont jamais envoyees au navigateur. Le cache serveur dure 15 minutes.
+`ETSY_SHARED_SECRET` n'est pas utilise pour le moment. Les cles Etsy ne sont
+jamais envoyees au navigateur. Le cache serveur dure 15 minutes.
 
 ## Formulaire de contact
 
