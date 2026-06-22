@@ -139,7 +139,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <SectionTitle
             eyebrow="Avis Etsy"
-            title="Quelques mots de ceux qui les portent."
+            title="Quelques mots de celles et ceux qui les portent :)"
             description="Avis laissés par les clients HandRope sur Etsy."
           />
           <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -156,7 +156,7 @@ export default function HomePage() {
             Fait main à Paris. Sans surproduction.
           </p>
           <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
-            Choisis le modèle qui te parle.
+            Des bracelets fabriqués pour durer.
           </h2>
           <Link
             href="/collection"
