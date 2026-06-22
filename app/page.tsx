@@ -8,12 +8,12 @@ import { reviews } from "@/lib/reviews";
 
 const promises = [
   {
-    title: "Fait main à Paris",
-    text: "Petites séries, tressage propre, finitions vérifiées à la main. Rien d'industriel, rien de compliqué."
+    title: "Fabriqué à la main",
+    text: "Petites séries, finitions soignées et contrôle de chaque pièce dans notre atelier avant expédition."
   },
   {
-    title: "De la corde, simplement",
-    text: "De la paracorde résistante, des noeuds coulissants, un port facile au quotidien. Le bracelet doit tenir, c'est tout."
+    title: "Pensé pour être porté",
+    text: "De la paracorde résistante, des nœuds coulissants et un port facile au quotidien. Des matériaux simples, assemblés avec soin pour créer un bracelet durable, ajustable et agréable à porter"
   },
   {
     title: "Commande via Etsy",
@@ -102,8 +102,8 @@ export default function HomePage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <SectionTitle
               eyebrow="Collection"
-              title="Cinq modèles, chacun avec son terrain."
-              description="Désert, mer, route, Italie, clin d'oeil français. Les noms ne sont pas là pour décorer : ils donnent le ton du bracelet."
+              title="Une collection qui s'agrandit au fil des idées."
+              description="Chaque bracelet a sa propre identité. Les couleurs changent, les inspirations aussi, mais l'idée reste la même : créer des pièces durables, faciles à porter et agréables à garder au poignet."
             />
             <Link
               href="/collection"
@@ -120,8 +120,8 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <SectionTitle
             eyebrow="Terrain"
-            title="Fait pour bouger, pas pour être fragile."
-            description="Un bracelet réglable, résistant à l'eau, pensé pour rester au poignet pendant les journées normales comme les départs improvisés."
+            title="Fait pour bouger."
+            description="Un bracelet réglable, résistant à l'eau et conçu pour être porté au quotidien."
           />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {usages.map((usage) => (
@@ -139,8 +139,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <SectionTitle
             eyebrow="Avis Etsy"
-            title="Simple, robuste, bien fait."
-            description="Les vrais retours laissés par les clients sur la boutique Etsy HandRope."
+            title="Quelques mots de ceux qui les portent."
+            description="Avis laissés par les clients HandRope sur Etsy."
           />
           <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {reviews.map((review) => (
