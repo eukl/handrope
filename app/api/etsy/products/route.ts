@@ -10,6 +10,10 @@ export const dynamic = "force-dynamic";
 const ETSY_API_BASE = "https://openapi.etsy.com/v3/application";
 const CACHE_TTL_MS = 15 * 60 * 1000;
 const ETSY_REQUEST_TIMEOUT_MS = 3000;
+const isProductionBuild =
+  process.env.NEXT_PHASE === "phase-production-build" &&
+  process.argv.some((arg) => arg.includes("next") || arg.includes("next\\dist")) &&
+  process.argv.includes("build");
 
 type CachedProducts = {
   data: EtsyProduct[];
@@ -174,6 +178,12 @@ async function fetchEtsyJson<T>(path: string, apiKey: string) {
     });
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        logEtsyError(`Etsy authentication failed with HTTP ${response.status}`);
+      } else {
+        logEtsyError(`Etsy request failed with HTTP ${response.status}`);
+      }
+
       throw new Error(`Etsy API ${response.status} on ${path}`);
     }
 
@@ -199,25 +209,31 @@ async function fetchListingImages(listingId: string, apiKey: string) {
 }
 
 async function fetchEtsyProducts() {
-  if (process.env.NEXT_PHASE === "phase-production-build") {
+  if (isProductionBuild) {
     return getFallbackProducts("Next production build detected");
   }
 
   const etsyEnv = getEtsyEnv();
 
   if (!etsyEnv.ok) {
+    logEtsyInfo(
+      `Etsy env check failed. Missing: ${etsyEnv.missing.join(", ")}`
+    );
     return getFallbackProducts(
       `Missing ${etsyEnv.missing.join(", ")} server env vars`
     );
   }
 
   const { keystring, shopId } = etsyEnv.value;
+  logEtsyInfo("Etsy env check passed. Keystring and shop id are present.");
+  logEtsyInfo("Fetching active Etsy listings.");
 
   const listingsResponse = await fetchEtsyJson<EtsyListResponse<EtsyListing>>(
     `/shops/${shopId}/listings/active?limit=100`,
     keystring
   );
   const listings = extractResults(listingsResponse);
+  logEtsyInfo(`Etsy returned ${listings.length} active listings.`);
 
   const normalizedProducts = await Promise.all(
     listings.map(async (listing) => {
@@ -258,6 +274,7 @@ async function fetchEtsyProducts() {
     return getFallbackProducts("Etsy returned no usable active listings");
   }
 
+  logEtsyInfo(`Using ${products.length} products from Etsy.`);
   return products;
 }
 
@@ -265,12 +282,16 @@ export async function GET() {
   const cachedProducts = getCachedProducts();
 
   if (cachedProducts) {
+    logEtsyInfo(
+      `Serving products from in-memory cache. Source: ${cachedProducts.source}.`
+    );
     return jsonResponse(cachedProducts.data, cachedProducts.source);
   }
 
   try {
     const etsyProducts = await fetchEtsyProducts();
     const source = etsyProducts === fallback ? "fallback" : "etsy";
+    logEtsyInfo(`Products response source: ${source}.`);
     setCachedProducts(etsyProducts, source);
 
     return jsonResponse(etsyProducts, source);
