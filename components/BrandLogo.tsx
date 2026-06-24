@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type BrandLogoProps = {
   showParis?: boolean;
   className?: string;
@@ -12,19 +14,21 @@ export default function BrandLogo({
   return (
     <span
       className={[
-        "inline-flex items-baseline font-display font-semibold tracking-wide",
+        "inline-flex items-center",
         className
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      <span aria-hidden="true" className="inline-flex items-baseline">
-        <span className="text-foreground">Hand</span>
-        <span className="handrope-logo-neon">Rope</span>
-        {showParis ? (
-          <span className="ml-2 text-foreground">Paris</span>
-        ) : null}
-      </span>
+      <Image
+        src="/brand/handrope-logo.png"
+        alt=""
+        width={960}
+        height={518}
+        priority={!showParis}
+        sizes="(max-width: 640px) 150px, 170px"
+        className="h-[1.75em] w-auto select-none object-contain opacity-[0.96]"
+      />
       <span className="sr-only">{label}</span>
     </span>
   );
