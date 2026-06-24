@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import fallbackProducts from "@/data/products-fallback.json";
-import { slugifyEtsyTitle, type EtsyProduct } from "@/lib/etsy-products";
-import { getProductCopyForListing } from "@/lib/product-copy";
+import {
+  normalizeEtsyDisplayTitle,
+  shortDescriptionFromEtsyDescription,
+  slugifyEtsyTitle,
+  type EtsyProduct
+} from "@/lib/etsy-products";
+import { decodeHtmlEntities } from "@/lib/html-entities";
 import { getEtsyEnv } from "@/lib/server/env";
 
 export const runtime = "nodejs";
@@ -39,6 +44,9 @@ type EtsyListing = {
   description?: string;
   url?: string;
   images?: EtsyImage[];
+  updated_timestamp?: number;
+  last_modified_tsz?: number;
+  updated_at?: string;
 };
 
 type EtsyImage = {
@@ -158,20 +166,6 @@ function extractResults<T>(payload: EtsyListResponse<T> | T[]): T[] {
   return payload.results ?? [];
 }
 
-function truncateDescription(description: string | undefined, title: string) {
-  const cleaned = description?.replace(/\s+/g, " ").trim();
-
-  if (!cleaned) {
-    return title;
-  }
-
-  if (cleaned.length <= 160) {
-    return cleaned;
-  }
-
-  return `${cleaned.slice(0, 157).trim()}...`;
-}
-
 function normalizePrice(price: EtsyMoney | undefined, currencyCode?: string) {
   if (typeof price === "object" && price !== null) {
     const amount = Number(price.amount ?? 0);
@@ -206,6 +200,29 @@ function imageUrlsFrom(images: EtsyImage[]) {
         ""
     )
     .filter(Boolean);
+}
+
+function updatedAtFromListing(listing: EtsyListing) {
+  const timestamp = listing.updated_timestamp ?? listing.last_modified_tsz;
+
+  if (timestamp) {
+    return new Date(timestamp * 1000).toISOString();
+  }
+
+  return listing.updated_at ?? null;
+}
+
+function uniqueSlugFrom(baseSlug: string, id: string, usedSlugs: Set<string>) {
+  const slug = baseSlug || id;
+
+  if (!usedSlugs.has(slug)) {
+    usedSlugs.add(slug);
+    return slug;
+  }
+
+  const uniqueSlug = `${slug}-${id}`;
+  usedSlugs.add(uniqueSlug);
+  return uniqueSlug;
 }
 
 async function fetchEtsyJson<T>(path: string, apiHeader: string) {
@@ -310,6 +327,7 @@ async function fetchEtsyProducts() {
   logEtsyInfo(`Etsy returned ${listings.length} active listings.`);
 
   const normalizedProducts: EtsyProduct[] = [];
+  const usedSlugs = new Set<string>();
 
   for (let index = 0; index < listings.length; index += 1) {
     const listing = listings[index];
@@ -319,9 +337,10 @@ async function fetchEtsyProducts() {
     }
 
     const id = String(listing.listing_id ?? "");
-    const title = listing.title?.trim() || `Listing ${id}`;
-    const productCopy = getProductCopyForListing({ id, title });
-    const slug = slugifyEtsyTitle(productCopy?.name ?? title) || id;
+    const etsyTitle = listing.title?.trim() || `Listing ${id}`;
+    const title = normalizeEtsyDisplayTitle(etsyTitle);
+    const description = decodeHtmlEntities(listing.description?.trim() ?? "");
+    const slug = uniqueSlugFrom(slugifyEtsyTitle(title), id, usedSlugs);
     const { price, currency } = normalizePrice(
       listing.price,
       listing.currency_code
@@ -335,14 +354,15 @@ async function fetchEtsyProducts() {
       id,
       slug,
       title,
+      etsyTitle,
       price,
       currency,
-      shortDescription:
-        productCopy?.shortDescription ??
-        truncateDescription(listing.description, title),
+      description,
+      shortDescription: shortDescriptionFromEtsyDescription(description, title),
       image: imageUrls[0] ?? imageUrlFrom(images),
       images: imageUrls,
-      etsyUrl: listing.url ?? `https://www.etsy.com/fr/listing/${id}`
+      etsyUrl: listing.url ?? `https://www.etsy.com/fr/listing/${id}`,
+      updatedAt: updatedAtFromListing(listing)
     });
   }
 

@@ -126,19 +126,39 @@ La reponse renvoyee au frontend contient uniquement :
 {
   id: string;
   slug: string;
-  title: string;
+  title: string; // titre court affiche sur HandRope.fr
+  etsyTitle: string; // titre complet conserve cote Etsy
   price: number;
   currency: string;
+  description: string;
   shortDescription: string;
   image: string;
   images: string[];
   etsyUrl: string;
+  updatedAt: string | null;
 }
 ```
 
 Le header Etsy est construit cote serveur sous la forme
 `ETSY_KEYSTRING:ETSY_SHARED_SECRET`. Les cles Etsy ne sont jamais envoyees au
 navigateur. Le cache serveur dure 15 minutes.
+
+Les titres affiches sur le site sont normalises depuis la premiere partie du
+titre Etsy, avant ` - `, ` – ` ou ` — `. Exemple :
+
+```txt
+PAINT IT, BLACK – Bracelet Paracorde Reglable Homme Femme
+```
+
+devient :
+
+```txt
+Paint It, Black
+```
+
+Si plusieurs listings actifs ont le meme titre court, ils sont conserves. Le
+slug de la premiere fiche reste simple, puis les doublons ajoutent l'id Etsy
+pour garder une page detail interne distincte.
 
 ## Formulaire de contact
 
@@ -188,29 +208,42 @@ Pour modifier un titre, un prix, une image ou une URL d'achat, faire la modifica
 
 Le fallback est utilise si Etsy ne repond pas, si les variables manquent ou pendant certains tests locaux.
 
-Modifier :
+Pour regenerer le backup depuis les listings actifs Etsy :
+
+```bash
+npm run sync:etsy-backup
+```
+
+La commande lit `ETSY_KEYSTRING`, `ETSY_SHARED_SECRET` et `ETSY_SHOP_ID` depuis
+l'environnement ou `.env.local`, puis ecrit :
 
 ```txt
 data/products-fallback.json
 ```
 
-Chaque entree doit respecter ce format :
+Le fichier est mis a jour uniquement si l'appel Etsy reussit et retourne au
+moins un produit actif valide. Une erreur API, un timeout ou une reponse vide
+ne doit pas ecraser le backup existant.
+
+Chaque entree respecte ce format :
 
 ```json
 {
   "id": "4517031306",
   "slug": "dune",
   "title": "Dune",
+  "etsyTitle": "DUNE - Bracelet Paracorde Reglable Homme Femme",
   "price": 24.9,
   "currency": "EUR",
-  "shortDescription": "Bracelet en paracorde fait main.",
-  "image": "/products/dune/dune-1.jpg",
+  "description": "Description complete Etsy...",
+  "shortDescription": "Description courte calculee depuis Etsy.",
+  "image": "https://i.etsystatic.com/...",
   "images": [
-    "/products/dune/dune-1.jpg",
-    "/products/dune/dune-2.jpg",
-    "/products/dune/dune-3.jpg"
+    "https://i.etsystatic.com/...",
+    "https://i.etsystatic.com/..."
   ],
-  "etsyUrl": "https://www.etsy.com/fr/listing/..."
+  "etsyUrl": "https://www.etsy.com/fr/listing/...",
+  "updatedAt": "2026-06-24T10:00:00.000Z"
 }
 ```
 

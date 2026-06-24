@@ -68,12 +68,15 @@ export default function EtsyHeroProducts() {
           id: title,
           slug: slugifyEtsyTitle(title),
           title,
+          etsyTitle: title,
           price: 0,
           currency: "EUR",
+          description: "",
           shortDescription: "",
           image: "",
           images: [],
-          etsyUrl: "#"
+          etsyUrl: "#",
+          updatedAt: null
         }));
 
   return (

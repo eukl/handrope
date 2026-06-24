@@ -67,8 +67,10 @@ export default function EtsyProductDetail({ slug }: EtsyProductDetailProps) {
   const product = findProductBySlug(products, slug);
   const copy = getProductCopyForSlug(slug);
   const title = product
-    ? copy?.name ?? etsyProductTitle(product.title)
+    ? etsyProductTitle(product.title)
     : copy?.name ?? "Modèle HandRope";
+  const description =
+    product?.description?.trim() || copy?.description || product?.shortDescription;
   const images = useMemo(() => {
     if (!product) {
       return [];
@@ -139,7 +141,7 @@ export default function EtsyProductDetail({ slug }: EtsyProductDetailProps) {
               {formatEtsyPrice(product.price, product.currency)}
             </p>
             <p className="mt-6 text-lg leading-8 text-muted">
-              {copy?.description ?? product.shortDescription}
+              {description}
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
