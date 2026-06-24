@@ -10,7 +10,7 @@ export default function BrandLogo({
   className = ""
 }: BrandLogoProps) {
   const label = showParis ? "HandRope Paris" : "HandRope";
-  const logoClassName = showParis ? "h-[1.75em]" : "h-[2.1875em]";
+  const logoClassName = showParis ? "h-[1.75em]" : "h-[2.3em]";
 
   return (
     <span
@@ -27,7 +27,7 @@ export default function BrandLogo({
         width={960}
         height={518}
         priority={!showParis}
-        sizes="(max-width: 640px) 155px, 180px"
+        sizes="(max-width: 640px) 165px, 190px"
         className={`${logoClassName} w-auto select-none object-contain`}
       />
       <span className="sr-only">{label}</span>
