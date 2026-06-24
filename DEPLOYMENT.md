@@ -28,6 +28,7 @@ formulaire de contact en local :
 
 ```bash
 ETSY_KEYSTRING="..."
+ETSY_SHARED_SECRET="..."
 ETSY_SHOP_ID="..."
 CONTACT_TO_EMAIL="adresse_email_destinataire"
 CONTACT_FROM_EMAIL="contact@handrope.fr"
@@ -38,7 +39,7 @@ Important :
 
 - Ne jamais prefixer ces variables avec `NEXT_PUBLIC_`.
 - Ne jamais commiter `.env.local`.
-- `ETSY_SHARED_SECRET` n'est pas utilise pour le moment.
+- Le header Etsy est construit cote serveur avec `ETSY_KEYSTRING:ETSY_SHARED_SECRET`.
 - Si les variables Etsy manquent, `/api/etsy/products` utilise `data/products-fallback.json`.
 - Si les variables Resend manquent, `/api/contact` renvoie une erreur controlee
   et le site continue de fonctionner.
@@ -133,6 +134,7 @@ Dans le projet Vercel :
 
 ```txt
 ETSY_KEYSTRING
+ETSY_SHARED_SECRET
 ETSY_SHOP_ID
 CONTACT_TO_EMAIL
 CONTACT_FROM_EMAIL

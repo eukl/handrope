@@ -14,7 +14,7 @@ type EnvResult<T> =
     };
 
 export type EtsyEnv = {
-  keystring: string;
+  apiHeader: string;
   shopId: string;
 };
 
@@ -50,16 +50,18 @@ function result<T>(
 
 export function getEtsyEnv(): EnvResult<EtsyEnv> {
   const keystring = readEnv("ETSY_KEYSTRING");
+  const sharedSecret = readEnv("ETSY_SHARED_SECRET");
   const shopId = readEnv("ETSY_SHOP_ID");
   const missing = [
     !keystring ? "ETSY_KEYSTRING" : null,
+    !sharedSecret ? "ETSY_SHARED_SECRET" : null,
     !shopId ? "ETSY_SHOP_ID" : null
   ].filter(Boolean) as string[];
 
   return result(
-    keystring && shopId
+    keystring && sharedSecret && shopId
       ? {
-          keystring,
+          apiHeader: `${keystring}:${sharedSecret}`,
           shopId
         }
       : null,

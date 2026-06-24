@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 const ETSY_API_BASE = "https://openapi.etsy.com/v3/application";
 const CACHE_TTL_MS = 15 * 60 * 1000;
 const ETSY_REQUEST_TIMEOUT_MS = 3000;
+const ETSY_IMAGE_REQUEST_DELAY_MS = 250;
 const isProductionBuild =
   process.env.NEXT_PHASE === "phase-production-build" &&
   process.argv.some((arg) => arg.includes("next") || arg.includes("next\\dist")) &&
@@ -118,6 +119,12 @@ function getFallbackProducts(reason: string) {
   return fallback;
 }
 
+function wait(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 function jsonResponse(data: EtsyProduct[], source: "etsy" | "fallback") {
   return NextResponse.json(data, {
     headers: {
@@ -201,7 +208,7 @@ function imageUrlsFrom(images: EtsyImage[]) {
     .filter(Boolean);
 }
 
-async function fetchEtsyJson<T>(path: string, apiKey: string) {
+async function fetchEtsyJson<T>(path: string, apiHeader: string) {
   const controller = new AbortController();
   const timeout = setTimeout(() => {
     controller.abort();
@@ -215,7 +222,7 @@ async function fetchEtsyJson<T>(path: string, apiKey: string) {
   try {
     const response = await fetch(endpoint, {
       headers: {
-        "x-api-key": apiKey
+        "x-api-key": apiHeader
       },
       cache: "no-store",
       signal: controller.signal
@@ -263,10 +270,10 @@ async function fetchEtsyJson<T>(path: string, apiKey: string) {
   }
 }
 
-async function fetchListingImages(listingId: string, apiKey: string) {
+async function fetchListingImages(listingId: string, apiHeader: string) {
   const imagesResponse = await fetchEtsyJson<EtsyListResponse<EtsyImage>>(
     `/listings/${listingId}/images`,
-    apiKey
+    apiHeader
   );
 
   return extractResults(imagesResponse);
@@ -288,48 +295,56 @@ async function fetchEtsyProducts() {
     );
   }
 
-  const { keystring, shopId } = etsyEnv.value;
-  logEtsyInfo("Etsy env check passed. Keystring and shop id are present.");
+  const { apiHeader, shopId } = etsyEnv.value;
+  logEtsyInfo(
+    "Etsy env check passed. Keystring, shared secret and shop id are present."
+  );
   logEtsyInfo(`Using Etsy shop id: ${maskIdentifier(shopId)}.`);
   logEtsyInfo("Fetching active Etsy listings.");
 
   const listingsResponse = await fetchEtsyJson<EtsyListResponse<EtsyListing>>(
     `/shops/${shopId}/listings/active?limit=100`,
-    keystring
+    apiHeader
   );
   const listings = extractResults(listingsResponse);
   logEtsyInfo(`Etsy returned ${listings.length} active listings.`);
 
-  const normalizedProducts = await Promise.all(
-    listings.map(async (listing) => {
-      const id = String(listing.listing_id ?? "");
-      const title = listing.title?.trim() || `Listing ${id}`;
-      const productCopy = getProductCopyForListing({ id, title });
-      const slug = slugifyEtsyTitle(productCopy?.name ?? title) || id;
-      const { price, currency } = normalizePrice(
-        listing.price,
-        listing.currency_code
-      );
-      const images = listing.images?.length
-        ? listing.images
-        : await fetchListingImages(id, keystring);
-      const imageUrls = imageUrlsFrom(images);
+  const normalizedProducts: EtsyProduct[] = [];
 
-      return {
-        id,
-        slug,
-        title,
-        price,
-        currency,
-        shortDescription:
-          productCopy?.shortDescription ??
-          truncateDescription(listing.description, title),
-        image: imageUrls[0] ?? imageUrlFrom(images),
-        images: imageUrls,
-        etsyUrl: listing.url ?? `https://www.etsy.com/fr/listing/${id}`
-      };
-    })
-  );
+  for (let index = 0; index < listings.length; index += 1) {
+    const listing = listings[index];
+
+    if (index > 0) {
+      await wait(ETSY_IMAGE_REQUEST_DELAY_MS);
+    }
+
+    const id = String(listing.listing_id ?? "");
+    const title = listing.title?.trim() || `Listing ${id}`;
+    const productCopy = getProductCopyForListing({ id, title });
+    const slug = slugifyEtsyTitle(productCopy?.name ?? title) || id;
+    const { price, currency } = normalizePrice(
+      listing.price,
+      listing.currency_code
+    );
+    const images = listing.images?.length
+      ? listing.images
+      : await fetchListingImages(id, apiHeader);
+    const imageUrls = imageUrlsFrom(images);
+
+    normalizedProducts.push({
+      id,
+      slug,
+      title,
+      price,
+      currency,
+      shortDescription:
+        productCopy?.shortDescription ??
+        truncateDescription(listing.description, title),
+      image: imageUrls[0] ?? imageUrlFrom(images),
+      images: imageUrls,
+      etsyUrl: listing.url ?? `https://www.etsy.com/fr/listing/${id}`
+    });
+  }
 
   const products = normalizedProducts.filter(
     (product) => product.id && product.etsyUrl

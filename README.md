@@ -34,6 +34,7 @@ Creer un fichier `.env.local` a la racine du projet :
 
 ```bash
 ETSY_KEYSTRING="..."
+ETSY_SHARED_SECRET="..."
 ETSY_SHOP_ID="..."
 CONTACT_TO_EMAIL="adresse_email_destinataire"
 CONTACT_FROM_EMAIL="contact@handrope.fr"
@@ -115,6 +116,7 @@ Elle lit les listings actifs de la boutique Etsy avec les variables serveur :
 
 ```txt
 ETSY_KEYSTRING
+ETSY_SHARED_SECRET
 ETSY_SHOP_ID
 ```
 
@@ -134,8 +136,9 @@ La reponse renvoyee au frontend contient uniquement :
 }
 ```
 
-`ETSY_SHARED_SECRET` n'est pas utilise pour le moment. Les cles Etsy ne sont
-jamais envoyees au navigateur. Le cache serveur dure 15 minutes.
+Le header Etsy est construit cote serveur sous la forme
+`ETSY_KEYSTRING:ETSY_SHARED_SECRET`. Les cles Etsy ne sont jamais envoyees au
+navigateur. Le cache serveur dure 15 minutes.
 
 ## Formulaire de contact
 
