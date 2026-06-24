@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import EtsyProductDescription from "@/components/EtsyProductDescription";
 import ProductGallery from "@/components/ProductGallery";
 import fallbackProducts from "@/data/products-fallback.json";
 import {
@@ -140,9 +141,7 @@ export default function EtsyProductDetail({ slug }: EtsyProductDetailProps) {
             <p className="mt-4 text-2xl font-semibold text-sand">
               {formatEtsyPrice(product.price, product.currency)}
             </p>
-            <p className="mt-6 text-lg leading-8 text-muted">
-              {description}
-            </p>
+            <EtsyProductDescription description={description ?? ""} />
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <a

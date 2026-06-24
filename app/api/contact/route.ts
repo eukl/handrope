@@ -246,7 +246,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      message: "Message envoyé. Merci, je te répondrai rapidement."
+      message: "Votre message a bien été envoyé. Nous vous répondrons rapidement. L'équipe HandRope."
     });
   } catch (error) {
     if (error instanceof Error && error.message === "CONTACT_FORM_UNAVAILABLE") {
