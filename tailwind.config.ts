@@ -43,14 +43,16 @@ const config: Config = {
         ]
       },
       boxShadow: {
-        glow: "0 24px 80px rgba(150, 105, 255, 0.22)",
-        warm: "0 20px 70px rgba(150, 105, 255, 0.14)"
+        glow:
+          "0 24px 70px rgba(88, 54, 145, 0.16), 0 8px 24px rgba(74, 68, 88, 0.08)",
+        warm:
+          "0 18px 52px rgba(74, 68, 88, 0.12), 0 6px 18px rgba(150, 105, 255, 0.08)"
       },
       backgroundImage: {
         "warm-gradient":
-          "linear-gradient(135deg, #9669ff 0%, #deaa5c 48%, #dc6431 100%)",
+          "linear-gradient(135deg, #9669ff 0%, #eab26a 48%, #dc6431 100%)",
         "surface-grain":
-          "radial-gradient(circle at top left, rgba(150, 105, 255, 0.18), transparent 34%), radial-gradient(circle at bottom right, rgba(220, 100, 49, 0.06), transparent 30%)"
+          "radial-gradient(circle at top left, rgba(150, 105, 255, 0.16), transparent 34%), radial-gradient(circle at bottom right, rgba(235, 158, 61, 0.12), transparent 30%)"
       }
     }
   },
