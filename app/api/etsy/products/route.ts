@@ -74,6 +74,45 @@ function logEtsyError(message: string, error?: unknown) {
   console.error(`[etsy-products] ${message}`);
 }
 
+function maskIdentifier(value: string) {
+  if (value.length <= 4) {
+    return "****";
+  }
+
+  return `${value.slice(0, 2)}***${value.slice(-2)}`;
+}
+
+function logBodyPrefix(body: string) {
+  return body.replace(/\s+/g, " ").trim().slice(0, 500);
+}
+
+function maskEtsyPath(path: string) {
+  return path.replace(/\/shops\/([^/]+)/, (_match, shopId: string) => {
+    return `/shops/${maskIdentifier(shopId)}`;
+  });
+}
+
+function errorDiagnostics(error: unknown) {
+  if (!(error instanceof Error)) {
+    return String(error);
+  }
+
+  const cause = error.cause;
+
+  if (cause instanceof Error) {
+    return `${error.name}: ${error.message}; cause=${cause.name}: ${cause.message}`;
+  }
+
+  if (cause && typeof cause === "object") {
+    const maybeCause = cause as { code?: unknown; message?: unknown };
+    return `${error.name}: ${error.message}; causeCode=${String(
+      maybeCause.code ?? "unknown"
+    )}; causeMessage=${String(maybeCause.message ?? "unknown")}`;
+  }
+
+  return `${error.name}: ${error.message}`;
+}
+
 function getFallbackProducts(reason: string) {
   logEtsyInfo(`${reason}. Using data/products-fallback.json.`);
   return fallback;
@@ -167,9 +206,14 @@ async function fetchEtsyJson<T>(path: string, apiKey: string) {
   const timeout = setTimeout(() => {
     controller.abort();
   }, ETSY_REQUEST_TIMEOUT_MS);
+  const endpoint = `${ETSY_API_BASE}${path}`;
+  const diagnosticPath = maskEtsyPath(path);
+  const diagnosticEndpoint = `${ETSY_API_BASE}${diagnosticPath}`;
+
+  logEtsyInfo(`Calling Etsy endpoint: ${diagnosticEndpoint}`);
 
   try {
-    const response = await fetch(`${ETSY_API_BASE}${path}`, {
+    const response = await fetch(endpoint, {
       headers: {
         "x-api-key": apiKey
       },
@@ -177,22 +221,42 @@ async function fetchEtsyJson<T>(path: string, apiKey: string) {
       signal: controller.signal
     });
 
+    logEtsyInfo(`Etsy HTTP status ${response.status} for ${diagnosticPath}.`);
+
     if (!response.ok) {
+      const errorBody = await response.text();
+      logEtsyInfo(
+        `Etsy error body for ${diagnosticPath}: ${logBodyPrefix(errorBody) || "(empty)"}`
+      );
+
       if (response.status === 401 || response.status === 403) {
         logEtsyError(`Etsy authentication failed with HTTP ${response.status}`);
       } else {
         logEtsyError(`Etsy request failed with HTTP ${response.status}`);
       }
 
-      throw new Error(`Etsy API ${response.status} on ${path}`);
+      const httpError = new Error(
+        `Etsy API ${response.status} on ${diagnosticPath}`
+      );
+      httpError.name = "EtsyHttpError";
+      throw httpError;
     }
 
     return (await response.json()) as T;
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
-      throw new Error(`Etsy API timeout after 3000ms on ${path}`);
+      throw new Error(`Etsy API timeout after 3000ms on ${diagnosticPath}`);
     }
 
+    if (error instanceof Error && error.name === "EtsyHttpError") {
+      throw error;
+    }
+
+    logEtsyInfo(
+      `Etsy request failed before HTTP response for ${diagnosticPath}. ${errorDiagnostics(
+        error
+      )}`
+    );
     throw error;
   } finally {
     clearTimeout(timeout);
@@ -226,6 +290,7 @@ async function fetchEtsyProducts() {
 
   const { keystring, shopId } = etsyEnv.value;
   logEtsyInfo("Etsy env check passed. Keystring and shop id are present.");
+  logEtsyInfo(`Using Etsy shop id: ${maskIdentifier(shopId)}.`);
   logEtsyInfo("Fetching active Etsy listings.");
 
   const listingsResponse = await fetchEtsyJson<EtsyListResponse<EtsyListing>>(
